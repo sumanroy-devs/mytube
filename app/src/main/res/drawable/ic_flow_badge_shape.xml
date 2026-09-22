@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App badge plate (tight crop), single path so it can be tinted to
+     the active theme at runtime. Pair with ic_flow_badge_glyph. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="36dp"
+    android:viewportWidth="20.08"
+    android:viewportHeight="15.22">
+    <path
+        android:fillColor="#FF0000"
+        android:pathData="M3.28,0.44 H16.4 A3.28,3.28 0 0 1 19.68,3.72 V11.1 A3.28,3.28 0 0 1 16.4,14.38 H3.28 A3.28,3.28 0 0 1 0,11.1 V3.72 A3.28,3.28 0 0 1 3.28,0.44 Z" />
+</vector>

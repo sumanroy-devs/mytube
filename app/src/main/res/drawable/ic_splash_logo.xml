@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Splash icon: the app glyph sized to fit inside the API 31+ circular
+     splash mask (content diagonal ~50 of the 66-unit inner circle). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.83"
+        android:scaleY="0.83"
+        android:translateX="9.18"
+        android:translateY="10.01">
+        <path
+            android:fillColor="#0778FE"
+            android:pathData="M38,36 H70 A8,8 0 0 1 78,44 V62 A8,8 0 0 1 70,70 H38 A8,8 0 0 1 30,62 V44 A8,8 0 0 1 38,36 Z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M49,47 L60,53 L49,60 Z" />
+    </group>
+</vector>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android TV launcher banner: the app glyph, centered large on the default
+     icon background (no wordmark). Badge stays inside the 5% overscan-safe
+     area of the 320x180 canvas (x 90-230, y 37-143). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="90dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M0,0h320v180h-320z" />
+    <group
+        android:scaleX="7.12"
+        android:scaleY="7.12"
+        android:translateX="90"
+        android:translateY="37.3">
+        <path
+            android:fillColor="#0778FE"
+            android:pathData="M3.28,0.44 H16.4 A3.28,3.28 0 0 1 19.68,3.72 V11.1 A3.28,3.28 0 0 1 16.4,14.38 H3.28 A3.28,3.28 0 0 1 0,11.1 V3.72 A3.28,3.28 0 0 1 3.28,0.44 Z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M7.79,4.95 L12.29,7.41 L7.79,10.27 Z" />
+    </group>
+</vector>
