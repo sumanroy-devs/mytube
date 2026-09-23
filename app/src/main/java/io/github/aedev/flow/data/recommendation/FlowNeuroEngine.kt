@@ -106,8 +106,6 @@ class FlowNeuroEngine(
             maxSeeds: Int = 4,
         ): List<String> = requireInstance().selectRelatedSeeds(candidates, maxSeeds)
 
-        suspend fun needsOnboarding(): Boolean = requireInstance().needsOnboarding()
-
         suspend fun getBrainSnapshot(): UserBrain = requireInstance().getBrainSnapshot()
 
         fun getPersona(brain: UserBrain): FlowPersona = requireInstance().getPersona(brain)
@@ -179,13 +177,6 @@ class FlowNeuroEngine(
         ) = getInstance(context).onChannelTagsLearned(channelId, tags, description)
 
         suspend fun onChannelUploadsObserved(uploads: List<Video>) = requireInstance().onChannelUploadsObserved(uploads)
-
-        suspend fun completeOnboarding(selectedTopics: Set<String>) = requireInstance().completeOnboarding(selectedTopics)
-
-        suspend fun completeOnboarding(
-            context: Context,
-            selectedTopics: Set<String>,
-        ) = getInstance(context).completeOnboarding(selectedTopics)
 
         suspend fun exportBrainToStream(output: OutputStream): Boolean = requireInstance().exportBrainToStream(output)
 
@@ -554,17 +545,8 @@ class FlowNeuroEngine(
     }
 
     // =================================================
-    // ONBOARDING & PREFERRED TOPICS
+    // PREFERRED TOPICS
     // =================================================
-
-    suspend fun needsOnboarding(): Boolean =
-        brainMutex.withLock {
-            !currentUserBrain.hasCompletedOnboarding &&
-                currentUserBrain.totalInteractions < 5 &&
-                currentUserBrain.preferredTopics.isEmpty()
-        }
-
-    suspend fun hasCompletedOnboarding(): Boolean = brainMutex.withLock { currentUserBrain.hasCompletedOnboarding }
 
     suspend fun getPreferredTopics(): Set<String> = brainMutex.withLock { currentUserBrain.preferredTopics }
 
@@ -656,59 +638,6 @@ class FlowNeuroEngine(
                     preferredTopics = currentUserBrain.preferredTopics - topic,
                 )
             storage.save(currentUserBrain)
-        }
-    }
-
-    suspend fun completeOnboarding(selectedTopics: Set<String>) {
-        brainMutex.withLock {
-            if (selectedTopics.isEmpty()) {
-                currentUserBrain =
-                    currentUserBrain.copy(
-                        hasCompletedOnboarding = true,
-                    )
-                storage.save(currentUserBrain)
-                Log.i(TAG, "Onboarding completed without replacing existing topics")
-                return
-            }
-
-            val topicList = selectedTopics.toList()
-            val newTopics = mutableMapOf<String, Double>()
-
-            topicList.forEachIndexed { index, topic ->
-                val weight =
-                    when {
-                        index < 3 -> 0.55
-                        index < 6 -> 0.40
-                        else -> 0.30
-                    }
-                newTopics[tokenizer.normalizeLemma(topic)] = weight
-            }
-
-            val affinities = mutableMapOf<String, Double>()
-            val normalizedList = topicList.map { tokenizer.normalizeLemma(it) }
-            for (i in normalizedList.indices) {
-                for (j in i + 1 until normalizedList.size) {
-                    val key =
-                        NeuroScoring.makeAffinityKey(
-                            normalizedList[i],
-                            normalizedList[j],
-                        )
-                    affinities[key] = 0.3
-                }
-            }
-
-            currentUserBrain =
-                currentUserBrain.copy(
-                    preferredTopics = selectedTopics,
-                    globalVector =
-                        currentUserBrain.globalVector.copy(
-                            topics = newTopics,
-                        ),
-                    topicAffinities = affinities,
-                    hasCompletedOnboarding = true,
-                )
-            storage.save(currentUserBrain)
-            Log.i(TAG, "Onboarding: ${selectedTopics.size} topics")
         }
     }
 

@@ -31,7 +31,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import io.github.aedev.flow.MainActivity
 import io.github.aedev.flow.data.local.PlayerPreferences
 import io.github.aedev.flow.data.model.Video
 import io.github.aedev.flow.data.recommendation.FlowNeuroEngine
@@ -145,14 +144,13 @@ fun FlowApp(
     // Offline Monitoring
     val currentRoute = remember { mutableStateOf(defaultStartRoute) }
 
-    // Onboarding check
-    var needsOnboarding by remember { mutableStateOf<Boolean?>(null) }
+    // Nav graph waits for engine init before composing screens that read it
+    var enginesInitialized by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         FlowNeuroEngine.initialize(context)
         DeepFlowManager.initialize(context)
-        val bypass = activity?.intent?.getBooleanExtra(MainActivity.EXTRA_BENCHMARK_BYPASS_ONBOARDING, false) == true
-        needsOnboarding = if (bypass) false else FlowNeuroEngine.needsOnboarding()
+        enginesInitialized = true
     }
 
     LaunchedEffect(sleepTimerCloseAppOnExpiry) {
@@ -199,8 +197,8 @@ fun FlowApp(
         currentRoute.value = navRouteForIndex(resolvedDefaultNavTabIndex)
     }
 
-    LaunchedEffect(isHomeNavigationEnabled, currentRoute.value, defaultStartRoute, needsOnboarding) {
-        if (needsOnboarding == false && !isHomeNavigationEnabled && currentRoute.value == "home") {
+    LaunchedEffect(isHomeNavigationEnabled, currentRoute.value, defaultStartRoute) {
+        if (!isHomeNavigationEnabled && currentRoute.value == "home") {
             selectedBottomNavIndex.intValue = resolvedDefaultNavTabIndex
             currentRoute.value = defaultStartRoute
             navController.navigate(defaultStartRoute) {
@@ -536,7 +534,7 @@ fun FlowApp(
                                 .padding(bottom = musicMiniPlayerContentPadding.coerceAtLeast(0.dp))
                                 .nestedScroll(nestedScrollConnection),
                     ) {
-                        if (needsOnboarding != null) {
+                        if (enginesInitialized) {
                             val homeViewModel: HomeViewModel = hiltViewModel(activity!!)
                             LaunchedEffect(homeViewModel) {
                                 homeViewModel.initialize(context.applicationContext)
@@ -549,7 +547,7 @@ fun FlowApp(
                             ) {
                                 NavHost(
                                     navController = navController,
-                                    startDestination = if (needsOnboarding == true) "onboarding" else defaultStartRoute,
+                                    startDestination = defaultStartRoute,
                                     enterTransition = {
                                         fadeIn(animationSpec = tween(250, easing = FastOutSlowInEasing)) +
                                             slideInHorizontally(

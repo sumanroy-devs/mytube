@@ -41,7 +41,6 @@ import io.github.aedev.flow.ui.screens.music.EnhancedMusicScreen
 import io.github.aedev.flow.ui.screens.music.MusicViewModel
 import io.github.aedev.flow.ui.screens.music.sharedMusicPlayerViewModel
 import io.github.aedev.flow.ui.screens.notifications.NotificationScreen
-import io.github.aedev.flow.ui.screens.onboarding.OnboardingScreen
 import io.github.aedev.flow.ui.screens.personality.FlowPersonalityScreen
 import io.github.aedev.flow.ui.screens.player.VideoPlayerViewModel
 import io.github.aedev.flow.ui.screens.player.state.VideoPlayerUiState
@@ -89,22 +88,6 @@ fun NavGraphBuilder.flowAppGraph(
      */
     bottomNavOverlayPadding: () -> Dp = { 0.dp },
 ) {
-    // =============================================
-    // ONBOARDING (First-time user experience)
-    // =============================================
-    composable("onboarding") {
-        currentRoute.value = "onboarding"
-        showBottomNav.value = false
-        OnboardingScreen(
-            onComplete = {
-                // Navigate to the selected default tab and clear the backstack so user can't go back to onboarding
-                navController.navigate(defaultStartRoute) {
-                    popUpTo("onboarding") { inclusive = true }
-                }
-            },
-        )
-    }
-
     composable("home") {
         currentRoute.value = "home"
         showBottomNav.value = playerSheetState.currentValue != PlayerSheetValue.Expanded

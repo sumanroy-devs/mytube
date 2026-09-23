@@ -67,7 +67,7 @@
     <string name="play_next_desc">Tambahkan ke awal antrean</string>
     <string name="add_to_queue">Tambahkan ke antrean</string>
     <string name="add_to_queue_desc">Tambahkan ke akhir antrean</string>
-    <string name="app_name_uppercase">MYTUBE</string>
+    <string name="app_name_uppercase">MyTube</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="new_update_available">Pembaruan Baru Tersedia</string>
     <string name="update_available_template">%1$s kini tersedia</string>

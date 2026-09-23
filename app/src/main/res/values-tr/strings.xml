@@ -210,7 +210,7 @@
     <string name="views_template">%1$s görüntüleme</string>
     <string name="artist">Sanatçı</string>
     <string name="playlist">Oynatma listesi</string>
-    <string name="app_name_uppercase">MYTUBE</string>
+    <string name="app_name_uppercase">MyTube</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="import_newpipe_backup">NewPipe Yedeğini içe aktar</string>
     <string name="importing_from_backup">NewPipe yedeğinden abonelikler içe aktarılıyor...</string>

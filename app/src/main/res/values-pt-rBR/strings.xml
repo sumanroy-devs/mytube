@@ -341,7 +341,7 @@
     <string name="added_to_playlist_toast">Adicionado à playlist</string>
     <string name="close_player">Fechar reprodutor</string>
     <string name="playlist">Playlist</string>
-    <string name="app_name_uppercase">MYTUBE</string>
+    <string name="app_name_uppercase">MyTube</string>
     <string name="edit_group">Editar Grupo</string>
     <string name="delete_group">Deletar Grupo</string>
     <string name="group_name_label">Nome do grupo</string>

@@ -328,7 +328,7 @@
     <string name="chapters">章節</string>
     <string name="artist">藝人</string>
     <string name="playlist">播放清單</string>
-    <string name="app_name_uppercase">MYTUBE</string>
+    <string name="app_name_uppercase">MyTube</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="unsubscribed_from_template">已取消訂閱 %1$s</string>
     <string name="hide_channel_shorts">隱藏此頻道的 Shorts</string>

@@ -289,7 +289,7 @@
     <string name="artist">아티스트</string>
     <string name="playlist">재생목록</string>
     <string name="playlist_visibility_metadata">%1$s • %2$s</string>
-    <string name="app_name_uppercase">MYTUBE</string>
+    <string name="app_name_uppercase">MyTube</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">맞춤 피드</string>
     <string name="import_newpipe_backup">NewPipe 백업 가져오기</string>

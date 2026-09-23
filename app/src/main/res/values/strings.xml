@@ -322,7 +322,7 @@
     <string name="nav_home">Home</string>
     <string name="nav_shorts">Shorts</string>
     <string name="nav_music">Music</string>
-    <string name="nav_subs">Subs</string>
+    <string name="nav_subs">Subscriptions</string>
     <string name="nav_library">Library</string>
     <string name="notifications">Notifications</string>
     <string name="search">Search</string>
@@ -373,7 +373,7 @@
     <string name="channel_links">Links</string>
     <string name="artist">Artist</string>
     <string name="playlist">Playlist</string>
-    <string name="app_name_uppercase">MYTUBE</string>
+    <string name="app_name_uppercase">MyTube</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">Your personalized feed</string>
     <plurals name="videos_curated_template">

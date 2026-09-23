@@ -199,7 +199,7 @@
     <string name="chapters">Poglavlja</string>
     <string name="artist">Izvođač</string>
     <string name="playlist">Lista za reprodukciju</string>
-    <string name="app_name_uppercase">MYTUBE</string>
+    <string name="app_name_uppercase">MyTube</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">Vaš personalizirani feed</string>
     <string name="import_newpipe_backup">Uvezi sigurnosnu kopiju iz NewPipe-a</string>
