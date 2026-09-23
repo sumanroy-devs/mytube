@@ -72,7 +72,7 @@ internal fun rememberVideoPlayerPreferences(context: Context): VideoPlayerPrefer
     val ambientModeEnabled by playerPreferences.videoAmbientModeEnabled.collectAsState(initial = false)
     val adaptivePlayerSizeEnabled by playerPreferences.adaptivePlayerSizeEnabled.collectAsState(initial = true)
     val groupedQualitySelectorEnabled by playerPreferences.groupedQualitySelectorEnabled.collectAsState(initial = false)
-    val lockModeEnabled by playerPreferences.overlayLockModeEnabled.collectAsState(initial = false)
+    val lockModeEnabled by playerPreferences.overlayLockModeEnabled.collectAsState(initial = true)
     val commentsEnabled by playerPreferences.commentsEnabled.collectAsState(initial = true)
     val preferredSubtitleLanguage by playerPreferences.preferredSubtitleLanguage
         .collectAsState(initial = CaptionTrackResolver.NO_PREFERRED_LANGUAGE)

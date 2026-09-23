@@ -4,9 +4,9 @@ data class PlayerOverlayPreferences(
     val castEnabled: Boolean = true,
     val captionsEnabled: Boolean = false,
     val pipEnabled: Boolean = false,
-    val autoplayEnabled: Boolean = false,
+    val autoplayEnabled: Boolean = true,
     val sleepTimerEnabled: Boolean = true,
-    val speedIndicatorEnabled: Boolean = false,
+    val speedIndicatorEnabled: Boolean = true,
     val commentsEnabled: Boolean = true,
     val showControlsWhileLoading: Boolean = false,
     val fullscreenSeekbarHorizontalPaddingDp: Int =

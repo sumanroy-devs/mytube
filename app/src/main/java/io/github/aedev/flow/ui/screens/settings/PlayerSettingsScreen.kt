@@ -164,7 +164,7 @@ fun PlayerSettingsScreen(onNavigateBack: () -> Unit) {
     val overlayAutoplayEnabled by playerPreferences.overlayAutoplayEnabled.collectAsState(overlayDefaults.autoplayEnabled)
     val overlaySleepTimerEnabled by
         playerPreferences.overlaySleepTimerEnabled.collectAsState(overlayDefaults.sleepTimerEnabled)
-    val overlayLockModeEnabled by playerPreferences.overlayLockModeEnabled.collectAsState(initial = false)
+    val overlayLockModeEnabled by playerPreferences.overlayLockModeEnabled.collectAsState(initial = true)
     val overlaySpeedIndicatorEnabled by
         playerPreferences.overlaySpeedIndicatorEnabled.collectAsState(overlayDefaults.speedIndicatorEnabled)
     val overlayCommentsEnabled by playerPreferences.overlayCommentsEnabled.collectAsState(overlayDefaults.commentsEnabled)
@@ -174,7 +174,7 @@ fun PlayerSettingsScreen(onNavigateBack: () -> Unit) {
     val autoplayCountdownSeconds by playerPreferences.autoplayCountdownSeconds.collectAsState(initial = 0)
     val skipSilenceEnabled by playerPreferences.skipSilenceEnabled.collectAsState(initial = false)
     val manualPipButtonEnabled by playerPreferences.manualPipButtonEnabled.collectAsState(initial = true)
-    val backgroundPlayEnabled by playerPreferences.backgroundPlayEnabled.collectAsState(initial = false)
+    val backgroundPlayEnabled by playerPreferences.backgroundPlayEnabled.collectAsState(initial = true)
     val shortsBackgroundPlay by playerPreferences.shortsBackgroundPlay.collectAsState(initial = false)
     val shortsPlaybackMode by playerPreferences.shortsPlaybackMode.collectAsState(initial = "loop")
     val shortsPipEnabled by playerPreferences.shortsPipEnabled.collectAsState(initial = false)

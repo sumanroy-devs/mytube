@@ -1209,7 +1209,7 @@ class PlayerPreferences(
     val backgroundPlayEnabled: Flow<Boolean> =
         context.playerPreferencesDataStore.data
             .map { preferences ->
-                preferences[Keys.BACKGROUND_PLAY_ENABLED] ?: false
+                preferences[Keys.BACKGROUND_PLAY_ENABLED] ?: true
             }
 
     suspend fun setBackgroundPlayEnabled(enabled: Boolean) {
@@ -1489,7 +1489,7 @@ class PlayerPreferences(
 
     val overlayLockModeEnabled: Flow<Boolean> =
         context.playerPreferencesDataStore.data
-            .map { preferences -> preferences[Keys.OVERLAY_LOCK_MODE_ENABLED] ?: false }
+            .map { preferences -> preferences[Keys.OVERLAY_LOCK_MODE_ENABLED] ?: true }
 
     suspend fun setOverlayLockModeEnabled(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->
