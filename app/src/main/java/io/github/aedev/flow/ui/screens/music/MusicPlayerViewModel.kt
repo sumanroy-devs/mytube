@@ -334,7 +334,11 @@ class MusicPlayerViewModel
                     // ─── PHASE 2: Background — does NOT block audio ───────────────────────
                     supervisorScope {
                         launch(PerformanceDispatcher.networkIO) {
-                            if (!localUriOverrides.containsKey(track.videoId) && !downloadManager.isCachedForOffline(track.videoId)) {
+                            if (
+                                !isLocalMediaId(track.videoId) &&
+                                    !localUriOverrides.containsKey(track.videoId) &&
+                                    !downloadManager.isCachedForOffline(track.videoId)
+                            ) {
                                 EnhancedMusicPlayerManager.resolveStreamUrl(track.videoId)
                             }
                         }

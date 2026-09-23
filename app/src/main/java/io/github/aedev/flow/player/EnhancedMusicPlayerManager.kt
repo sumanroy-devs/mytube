@@ -151,6 +151,9 @@ object EnhancedMusicPlayerManager {
     private var pendingPlayNextMediaId: String? = null
     private var pendingPlayNextMediaIndex: Int = MusicQueuePlanner.INDEX_UNSET
 
+    // Local-file URIs kept across plays — see playTrack.
+    private var activeLocalUris: Map<String, Uri> = emptyMap()
+
     // OPTIMIZED: Pre-fetch next track to reduce gap
     private fun prefetchNextTrack() {
         val queue = _queue.value
@@ -158,6 +161,7 @@ object EnhancedMusicPlayerManager {
 
         if (idx != -1 && idx < queue.size - 1) {
             val nextTrack = queue[idx + 1]
+            if (nextTrack.videoId.startsWith("local_")) return // streams from MediaStore; no URL to fetch
             if (urlCache.get(nextTrack.videoId) == null) {
                 scope.launch(Dispatchers.IO) {
                     try {
@@ -578,9 +582,17 @@ object EnhancedMusicPlayerManager {
         _currentTrack.value = track
         sourceName?.let { _playingFrom.value = it }
 
+        // MediaStore URIs must outlive one play: manual next/previous rebuilds this timeline
+        // through RequestPlayTrack, and that path cannot re-derive local file URIs.
+        val mediaStoreUris = localUriOverrides.filterKeys { it.startsWith("local_") }
+        if (mediaStoreUris.isNotEmpty()) {
+            activeLocalUris = activeLocalUris + mediaStoreUris
+        }
+        val uriOverrides = activeLocalUris + localUriOverrides
+
         val mediaItems =
             activeQueue.map { t ->
-                val localUri = localUriOverrides[t.videoId]
+                val localUri = uriOverrides[t.videoId]
                 val uri =
                     localUri ?: if (t.videoId == track.videoId && audioUrl.isNotEmpty()) {
                         Uri.parse(audioUrl)
