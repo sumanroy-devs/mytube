@@ -198,7 +198,7 @@
     <string name="chapters">अध्याय</string>
     <string name="artist">कलाकार</string>
     <string name="playlist">प्लेलिस्ट</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">आपकी व्यक्तिगत फ़ीड</string>
     <string name="import_newpipe_backup">न्यूपाइप बैकअप आयात करें</string>
@@ -762,8 +762,8 @@
     <string name="location_dialog_subtitle">चुनें कि डाउनलोड की गई फ़ाइलें आपके डिवाइस पर कहाँ सहेजी जाएँ।</string>
     <string name="location_preset_header">पूर्वनिर्धारित स्थान</string>
     <string name="location_custom_header">कस्टम स्थान</string>
-    <string name="location_downloads_label">डाउनलोड / Flow</string>
-    <string name="location_movies_label">मूवीज़ / Flow</string>
+    <string name="location_downloads_label">डाउनलोड / MyTube</string>
+    <string name="location_movies_label">मूवीज़ / MyTube</string>
     <string name="location_internal_app_label">आंतरिक ऐप संग्रहण</string>
     <string name="location_internal_app_desc">ऐप की निजी फ़ाइलें — यदि आप ऐप अनइंस्टॉल करते हैं तो फ़ाइलें हट सकती हैं</string>
     <string name="location_custom_saf_label">ब्राउज़ करें…</string>

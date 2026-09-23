@@ -294,7 +294,7 @@ fun FlowPersonalityScreen(
                 ProfileDataSection(
                     onExport = {
                         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-                        exportLauncher.launch("flow_brain_$timestamp.json")
+                        exportLauncher.launch("mytube_brain_$timestamp.json")
                     },
                     onImport = {
                         importLauncher.launch(arrayOf("application/json", "text/plain"))

@@ -296,9 +296,9 @@ class SyncDataAccess
                     exported = neuroEngine.exportBrainToStream(bos)
                     bos.toByteArray()
                 }
-            if (!exported) throw IllegalStateException("could not read the local FlowNeuro brain")
+            if (!exported) throw IllegalStateException("could not read the local MyTube brain")
             return runCatching { BrainMapper.parse(bytes) }
-                .getOrElse { throw IllegalStateException("the local FlowNeuro brain could not be parsed", it) }
+                .getOrElse { throw IllegalStateException("the local MyTube brain could not be parsed", it) }
         }
 
         // --- music brain (stateful: CRDT sidecar, the music twin of the neuro path) ---

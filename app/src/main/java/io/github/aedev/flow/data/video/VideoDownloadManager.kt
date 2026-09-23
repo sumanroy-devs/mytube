@@ -77,8 +77,8 @@ class VideoDownloadManager
     ) {
         companion object {
             private const val TAG = "VideoDownloadManager"
-            const val VIDEO_DIR = "Flow"
-            const val AUDIO_DIR = "Flow"
+            const val VIDEO_DIR = "MyTube"
+            const val AUDIO_DIR = "MyTube"
 
             /**
              * Legacy bridge — callers that still use getInstance() will get a crash
@@ -755,7 +755,7 @@ class VideoDownloadManager
 
         /**
          * MediaStore-based recovery scan.  Queries the system media index for video and audio files
-         * stored in any folder named [VIDEO_DIR] ("Flow").  Works with only READ_MEDIA_VIDEO /
+         * stored in any folder named [VIDEO_DIR] ("MyTube").  Works with only READ_MEDIA_VIDEO /
          * READ_MEDIA_AUDIO — no MANAGE_EXTERNAL_STORAGE needed.  Safe to call repeatedly.
          * Scans: Downloads/Flow, Movies/Flow, app-private external dirs, and the user's custom path.
          */

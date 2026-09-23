@@ -239,7 +239,7 @@ fun DownloadSettingsScreen(onNavigateBack: () -> Unit) {
             try {
                 File(
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
-                    "Flow",
+                    "MyTube",
                 ).absolutePath
             } catch (e: Exception) {
                 context.getString(R.string.internal_app_storage_label)
@@ -250,7 +250,7 @@ fun DownloadSettingsScreen(onNavigateBack: () -> Unit) {
             try {
                 File(
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
-                    "Flow",
+                    "MyTube",
                 ).absolutePath
             } catch (e: Exception) {
                 context.getString(R.string.internal_app_storage_label)
@@ -729,7 +729,7 @@ fun DownloadSettingsScreen(onNavigateBack: () -> Unit) {
         val downloadsPath =
             remember {
                 try {
-                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Flow").absolutePath
+                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "MyTube").absolutePath
                 } catch (
                     _: Exception,
                 ) {
@@ -745,7 +745,7 @@ fun DownloadSettingsScreen(onNavigateBack: () -> Unit) {
                         } else {
                             Environment.DIRECTORY_MOVIES
                         }
-                    File(Environment.getExternalStoragePublicDirectory(baseDir), "Flow").absolutePath
+                    File(Environment.getExternalStoragePublicDirectory(baseDir), "MyTube").absolutePath
                 } catch (_: Exception) {
                     null
                 }

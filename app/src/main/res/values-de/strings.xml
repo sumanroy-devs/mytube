@@ -197,7 +197,7 @@
     <string name="chapters">Kapitel</string>
     <string name="artist">Künstler</string>
     <string name="playlist">Playlist</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">Dein persönlicher Feed</string>
     <string name="import_newpipe_backup">NewPipe-Backup importieren</string>
@@ -1506,8 +1506,8 @@
     <string name="location_dialog_subtitle">Wählen Sie aus, wo die heruntergeladenen Dateien auf Ihrem Gerät gespeichert werden sollen.</string>
     <string name="location_preset_header">Voreingestellte Standorte</string>
     <string name="location_custom_header">Benutzerdefinierter Standort</string>
-    <string name="location_downloads_label">Downloads / Flow</string>
-    <string name="location_movies_label">Movies / Flow</string>
+    <string name="location_downloads_label">Downloads / MyTube</string>
+    <string name="location_movies_label">Movies / MyTube</string>
     <string name="location_internal_app_label">Interner App-Speicher</string>
     <string name="location_internal_app_desc">Nur in der App verfügbar – Dateien werden möglicherweise gelöscht, wenn Sie die App deinstallieren</string>
     <string name="location_custom_saf_desc">Wählen Sie mithilfe der System-Dateiauswahl einen beliebigen Ordner aus.</string>

@@ -649,8 +649,8 @@
     <string name="location_dialog_subtitle">اختر مكان حفظ الملفات التي تم تنزيلها على جهازك.</string>
     <string name="location_preset_header">المواقع المحددة مسبقًا</string>
     <string name="location_custom_header">موقع تخزين مخصص</string>
-    <string name="location_downloads_label">Downloads / Flow</string>
-    <string name="location_movies_label">Movies / Flow</string>
+    <string name="location_downloads_label">Downloads / MyTube</string>
+    <string name="location_movies_label">Movies / MyTube</string>
     <string name="location_internal_app_label">التخزين الداخلي للتطبيق</string>
     <string name="location_internal_app_desc">تخزين في التطبيق — قد يتم حذف الملفات في حالة إلغاء التثبيت</string>
     <string name="location_custom_saf_label">تصفح…</string>
@@ -1052,7 +1052,7 @@
     <string name="ago">منذ</string>
     <string name="since">منذ</string>
     <string name="play_next_desc">أضف إلى بداية قائمة الانتظار</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="explicit">صريحة</string>
     <string name="filter_hd">HD</string>

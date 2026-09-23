@@ -341,7 +341,7 @@
     <string name="added_to_playlist_toast">Adicionado à playlist</string>
     <string name="close_player">Fechar reprodutor</string>
     <string name="playlist">Playlist</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="edit_group">Editar Grupo</string>
     <string name="delete_group">Deletar Grupo</string>
     <string name="group_name_label">Nome do grupo</string>
@@ -1210,8 +1210,8 @@
     <string name="location_dialog_subtitle">Escolher onde os arquivos baixados serão salvos no seu dispositivo.</string>
     <string name="location_preset_header">Locais predefinidos</string>
     <string name="location_custom_header">Local personalizado</string>
-    <string name="location_downloads_label">Downloads / Flow</string>
-    <string name="location_movies_label">Filmes / Flow</string>
+    <string name="location_downloads_label">Downloads / MyTube</string>
+    <string name="location_movies_label">Filmes / MyTube</string>
     <string name="location_internal_app_label">Armazenamento interno do aplicativo</string>
     <string name="location_internal_app_desc">Privado ao aplicativo — os arquivos podem ser excluídos se você desinstalar</string>
     <string name="location_custom_saf_label">Navegar…</string>

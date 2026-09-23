@@ -290,7 +290,7 @@
     <string name="artist">İfaçı</string>
     <string name="playlist">Pleylist</string>
     <string name="playlist_visibility_metadata">%1$s • %2$s</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">Fərdiləşdirilmiş lentiniz</string>
     <string name="import_newpipe_backup">NewPipe ehtiyat nüsxəsini idxal et</string>
@@ -1174,8 +1174,8 @@
     <string name="location_dialog_subtitle">Endirilən faylların cihazınızda harada saxlanılacağını seçin.</string>
     <string name="location_preset_header">Hazır məkanlar</string>
     <string name="location_custom_header">Fərdi məkan</string>
-    <string name="location_downloads_label">Endirmələr / Flow</string>
-    <string name="location_movies_label">Filmlər / Flow</string>
+    <string name="location_downloads_label">Endirmələr / MyTube</string>
+    <string name="location_movies_label">Filmlər / MyTube</string>
     <string name="location_internal_app_label">Tətbiqin daxili yaddaşı</string>
     <string name="location_internal_app_desc">Yalnız tətbiqə məxsusdur — tətbiqi silsəniz fayllar da silinə bilər</string>
     <string name="location_custom_saf_label">Gözdən keçir…</string>

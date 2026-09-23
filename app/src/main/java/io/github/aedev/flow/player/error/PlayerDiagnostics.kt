@@ -127,7 +127,7 @@ object PlayerDiagnostics {
 
         // Header
         sb.appendLine("═══════════════════════════════════")
-        sb.appendLine("       FLOW PLAYER DIAGNOSTICS")
+        sb.appendLine("       MYTUBE PLAYER DIAGNOSTICS")
         sb.appendLine("  ${DATE_FORMAT.format(Date())} — ${Build.MODEL}")
         sb.appendLine("═══════════════════════════════════")
         sb.appendLine()

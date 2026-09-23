@@ -2237,7 +2237,7 @@ class BackupRepository(
                         settings = getMergedSettingsBackup(),
                     )
                 val json = gson.toJson(backupData)
-                writeToFolder(folderUri, "flow_backup.json", "application/json") { out ->
+                writeToFolder(folderUri, "mytube_backup.json", "application/json") { out ->
                     out.write(json.toByteArray(Charsets.UTF_8))
                 }
             } catch (e: Exception) {
@@ -2249,7 +2249,7 @@ class BackupRepository(
         withContext(Dispatchers.IO) {
             try {
                 val brainBytes = exportBrainBytes()
-                writeToFolder(folderUri, "flow_engine.json", "application/json") { out ->
+                writeToFolder(folderUri, "mytube_engine.json", "application/json") { out ->
                     out.write(brainBytes)
                 }
             } catch (e: Exception) {
@@ -2277,7 +2277,7 @@ class BackupRepository(
                 val appDataJson = gson.toJson(backupData)
                 val brainBytes = exportBrainBytes()
 
-                writeToFolder(folderUri, "flow_master_backup.zip", "application/zip") { out ->
+                writeToFolder(folderUri, "mytube_master_backup.zip", "application/zip") { out ->
                     ZipOutputStream(out).use { zip ->
                         zip.putNextEntry(ZipEntry("app_data.json"))
                         zip.write(appDataJson.toByteArray(Charsets.UTF_8))

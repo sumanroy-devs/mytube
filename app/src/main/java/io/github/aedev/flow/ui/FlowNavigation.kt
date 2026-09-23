@@ -323,7 +323,6 @@ fun NavGraphBuilder.flowAppGraph(
             onNavigateBack = { navController.popBackStack() },
             onNavigateToAppearance = { navController.navigate("settings/appearance") },
             onNavigateToPlayerAppearance = { navController.navigate("settings/player_appearance") },
-            onNavigateToDonations = { navController.navigate("donations") },
             onNavigateToPersonality = { navController.navigate("personality") },
             onNavigateToDownloads = { navController.navigate("settings/downloads") },
             onNavigateToTimeManagement = { navController.navigate("settings/time_management") },
@@ -336,7 +335,6 @@ fun NavGraphBuilder.flowAppGraph(
             onNavigateToDateTimeSettings = { navController.navigate("settings/datetime") },
             onNavigateToBufferSettings = { navController.navigate("settings/buffer") },
             onNavigateToSearchHistory = { navController.navigate("settings/search_history") },
-            onNavigateToAbout = { navController.navigate("settings/about") },
             onNavigateToUserPreferences = { navController.navigate("settings/user_preferences") },
             onNavigateToNotifications = { navController.navigate("settings/notifications") },
             onNavigateToAppIconPicker = { navController.navigate("settings/app_icon") },
@@ -476,15 +474,6 @@ fun NavGraphBuilder.flowAppGraph(
         )
     }
 
-    composable("settings/about") {
-        currentRoute.value = "settings/about"
-        showBottomNav.value = false
-        io.github.aedev.flow.ui.screens.settings.AboutScreen(
-            onNavigateBack = { navController.popBackStack() },
-            onNavigateToDonations = { navController.navigate("donations") },
-        )
-    }
-
     composable("settings/appearance") {
         currentRoute.value = "settings/appearance"
         showBottomNav.value = false
@@ -541,14 +530,6 @@ fun NavGraphBuilder.flowAppGraph(
         currentRoute.value = "settings/diagnostics"
         showBottomNav.value = false
         io.github.aedev.flow.ui.screens.settings.DiagnosticsScreen(
-            onNavigateBack = { navController.popBackStack() },
-        )
-    }
-
-    composable("donations") {
-        currentRoute.value = "donations"
-        showBottomNav.value = false
-        io.github.aedev.flow.ui.screens.settings.DonationsScreen(
             onNavigateBack = { navController.popBackStack() },
         )
     }

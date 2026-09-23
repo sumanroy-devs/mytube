@@ -228,7 +228,7 @@
     <string name="album_art">Caratula del álbum</string>
     <string name="views_template">%1$s visualizaciones</string>
     <string name="chapters">Capítulos</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">Tu feed personal</string>
     <string name="import_newpipe_backup">Importar copia de seguridad de NewPipe</string>
@@ -910,10 +910,10 @@
     <string name="location_dialog_subtitle">Elija dónde se guardan los archivos descargados en su dispositivo.</string>
     <string name="location_custom_header">Ubicación personalizada</string>
     <string name="location_preset_header">Ubicaciones preestablecidas</string>
-    <string name="location_downloads_label">Descargas / Flow</string>
+    <string name="location_downloads_label">Descargas / MyTube</string>
     <string name="location_internal_app_label">Almacenamiento interno de aplicaciones</string>
     <string name="location_internal_app_desc">Privado para la aplicación: los archivos se pueden eliminar si los desinstalas</string>
-    <string name="location_movies_label">Películas / Flow</string>
+    <string name="location_movies_label">Películas / MyTube</string>
     <string name="location_custom_saf_desc">Elija cualquier carpeta usando el selector de archivos del sistema</string>
     <string name="location_custom_manual_desc">Escriba una ruta absoluta, p. /almacenamiento/emulado/0/MiCarpeta</string>
     <string name="location_manual_hint">/almacenamiento/emulado/0/…</string>

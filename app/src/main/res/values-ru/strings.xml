@@ -200,7 +200,7 @@
     <string name="chapters">Главы</string>
     <string name="artist">Исполнитель</string>
     <string name="playlist">Плейлист</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">Ваша персональная лента</string>
     <string name="import_newpipe_backup">Импорт резервной копии NewPipe</string>
@@ -1423,8 +1423,8 @@
     <string name="default_video_quality_label">Качество видео по умолчанию</string>
     <string name="default_download_codec_auto_subtitle">Использует ваш последний выбор или кодек текущего видео</string>
     <string name="download_over_wifi_only">Загрузка только по Wi-Fi</string>
-    <string name="location_downloads_label">Загрузки / Flow</string>
-    <string name="location_movies_label">Фильмы / Flow</string>
+    <string name="location_downloads_label">Загрузки / MyTube</string>
+    <string name="location_movies_label">Фильмы / MyTube</string>
     <string name="location_internal_app_label">Внутреннее хранилище приложения</string>
     <string name="location_custom_saf_label">Просмотр…</string>
     <string name="location_internal_app_desc">Доступно только в приложении – файлы могут быть удалены при удалении приложения</string>

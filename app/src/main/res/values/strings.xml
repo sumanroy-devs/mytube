@@ -373,7 +373,7 @@
     <string name="channel_links">Links</string>
     <string name="artist">Artist</string>
     <string name="playlist">Playlist</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">Your personalized feed</string>
     <plurals name="videos_curated_template">
@@ -1502,8 +1502,8 @@
     <string name="location_dialog_subtitle">Choose where downloaded files are saved on your device.</string>
     <string name="location_preset_header">Preset Locations</string>
     <string name="location_custom_header">Custom Location</string>
-    <string name="location_downloads_label">Downloads / Flow</string>
-    <string name="location_movies_label">Movies / Flow</string>
+    <string name="location_downloads_label">Downloads / MyTube</string>
+    <string name="location_movies_label">Movies / MyTube</string>
     <string name="location_internal_app_label">Internal App Storage</string>
     <string name="location_internal_app_desc">Private to the app — files may be deleted if you uninstall</string>
     <string name="location_custom_saf_label">Browse…</string>

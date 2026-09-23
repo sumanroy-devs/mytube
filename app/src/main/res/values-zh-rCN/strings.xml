@@ -290,7 +290,7 @@
     <string name="artist">艺术家</string>
     <string name="playlist">播放列表</string>
     <string name="playlist_visibility_metadata">%1$s • %2$s</string>
-    <string name="app_name_uppercase">FLOW</string>
+    <string name="app_name_uppercase">MYTUBE</string>
     <string name="notification_badge_9_plus">9+</string>
     <string name="personalized_feed">您的个性化信息流</string>
     <string name="import_newpipe_backup">导入NewPipe备份</string>
@@ -1174,8 +1174,8 @@
     <string name="location_dialog_subtitle">选择下载的文件在设备上的保存位置。</string>
     <string name="location_preset_header">预设位置</string>
     <string name="location_custom_header">自定义位置</string>
-    <string name="location_downloads_label">下载 / Flow</string>
-    <string name="location_movies_label">电影 / Flow</string>
+    <string name="location_downloads_label">下载 / MyTube</string>
+    <string name="location_movies_label">电影 / MyTube</string>
     <string name="location_internal_app_label">内部应用程序存储</string>
     <string name="location_internal_app_desc">应用程序私有 - 如果卸载，文件可能会被删除</string>
     <string name="location_custom_saf_label">浏览…</string>
