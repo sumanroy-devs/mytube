@@ -114,6 +114,7 @@ class FlowDownloadService : Service() {
         const val EXTRA_AUDIO_EXTENSION = "audio_extension"
         const val EXTRA_AUDIO_MIME_TYPE = "audio_mime_type"
         const val EXTRA_IS_MUSIC = "is_music"
+        private const val EXTRA_MUSIC_ALBUM = "music_album"
 
         /**
          * Optional video codec hint (e.g. "vp9", "vp8", "h264").
@@ -169,6 +170,8 @@ class FlowDownloadService : Service() {
                     putExtra("video_duration", video.duration)
                     putExtra(EXTRA_AUDIO_ONLY, audioOnly)
                     putExtra(EXTRA_IS_MUSIC, isMusic)
+                    // Album rides Video.description on the music path; video SABR missions skip it.
+                    if (isMusic) video.description.takeIf { it.isNotEmpty() }?.let { putExtra(EXTRA_MUSIC_ALBUM, it) }
                     putExtra(EXTRA_SABR_STREAMING_URL, sabrStreamingUrl)
                     putExtra(EXTRA_SABR_AUDIO_ITAG, audioItag)
                     putExtra(EXTRA_SABR_AUDIO_LMT, audioLmt)
@@ -221,6 +224,9 @@ class FlowDownloadService : Service() {
                     putExtra("video_user_agent", userAgent)
                     putExtra(EXTRA_AUDIO_ONLY, audioOnly)
                     putExtra(EXTRA_IS_MUSIC, isMusic)
+                    // The music path carries the album in Video.description; forwarded only for
+                    // music so video missions never inherit a song's album as their own.
+                    if (isMusic) video.description.takeIf { it.isNotEmpty() }?.let { putExtra(EXTRA_MUSIC_ALBUM, it) }
                     if (videoCodec != null) putExtra(EXTRA_VIDEO_CODEC, videoCodec)
                     if (audioExtension != null) putExtra(EXTRA_AUDIO_EXTENSION, audioExtension)
                     if (audioMimeType != null) putExtra(EXTRA_AUDIO_MIME_TYPE, audioMimeType)
@@ -322,6 +328,7 @@ class FlowDownloadService : Service() {
                 val audioExtension = intent.getStringExtra(EXTRA_AUDIO_EXTENSION)
                 val audioMimeType = intent.getStringExtra(EXTRA_AUDIO_MIME_TYPE)
                 val isMusic = intent.getBooleanExtra(EXTRA_IS_MUSIC, false)
+                val musicAlbum = intent.getStringExtra(EXTRA_MUSIC_ALBUM)
                 val threadsOverride = intent.getIntExtra(EXTRA_THREADS, 0).takeIf { it > 0 }
 
                 val fallbackUrl = intent.getStringExtra(EXTRA_FALLBACK_URL)
@@ -376,6 +383,7 @@ class FlowDownloadService : Service() {
                             sabrVisitorId = sabrVisitorId,
                             sabrUstreamerConfig = sabrUstreamerConfig,
                             sabrDurationMs = sabrDurationMs,
+                            album = musicAlbum,
                         )
                     } finally {
                         pendingDownloadStarts.decrementAndGet()
@@ -433,6 +441,7 @@ class FlowDownloadService : Service() {
         sabrVisitorId: String = "",
         sabrUstreamerConfig: ByteArray = ByteArray(0),
         sabrDurationMs: Long = 0,
+        album: String? = null,
     ) {
         try {
             Log.d(TAG, "handleStartDownload: Checking directories...")
@@ -515,6 +524,8 @@ class FlowDownloadService : Service() {
                         threads = threadCount,
                         userAgent = userAgent,
                         videoCodec = codecHint,
+                        isMusic = isMusic,
+                        album = album,
                     )
                 } else {
                     FlowDownloadMission(
@@ -526,6 +537,8 @@ class FlowDownloadService : Service() {
                         fileName = fileName,
                         threads = threadCount,
                         videoCodec = codecHint,
+                        isMusic = isMusic,
+                        album = album,
                     )
                 }
 
@@ -1258,6 +1271,18 @@ class FlowDownloadService : Service() {
             downloadManager.updateItemFull(ids.first(), fileSize, fileSize, DownloadItemStatus.COMPLETED)
         }
 
+        // Tag before the scan so MediaStore indexes real title/artist/cover instead of filename
+        // guesswork; the writer logs and swallows its own failures.
+        if (audioOnly && mission.isMusic) {
+            writeAudioMetadata(
+                filePath = mission.savePath,
+                title = mission.video.title,
+                artist = mission.video.channelName,
+                album = mission.album,
+                thumbnailUrl = mission.video.thumbnailUrl.takeIf { it.isNotBlank() },
+            )
+        }
+
         try {
             val mimeType =
                 when {
@@ -1312,6 +1337,7 @@ class FlowDownloadService : Service() {
             path.endsWith(".webm", ignoreCase = true) -> "audio/webm"
             path.endsWith(".ogg", ignoreCase = true) -> "audio/ogg"
             path.endsWith(".opus", ignoreCase = true) -> "audio/ogg"
+            path.endsWith(".m4a", ignoreCase = true) -> "audio/mp4"
             path.endsWith(".mp3", ignoreCase = true) -> "audio/mpeg"
             else -> fallback
         }

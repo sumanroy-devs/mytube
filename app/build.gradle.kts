@@ -301,6 +301,9 @@ dependencies {
     implementation(libs.brotli)
     implementation(libs.re2j)
 
+    // Tag writer for finished MP4 downloads — Android exposes no metadata-writing API.
+    implementation(libs.jaudiotagger)
+
     // --- Baseline profiles ---
     // Runtime installer for the merged baseline profile. AGP merges profiles shipped inside
     // library AARs (Compose, RecyclerView, ...) at build time; this applies them at runtime,

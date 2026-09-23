@@ -153,26 +153,30 @@ object MusicPlayerUtils {
     suspend fun playerResponseForPlayback(
         videoId: String,
         playlistId: String? = null,
+        preferMp4: Boolean = false,
     ): Result<PlaybackData> =
         withContext(Dispatchers.IO) {
-            val cached = resultCache[videoId]
+            // Download resolves (preferMp4) get their own cache slot: a streaming resolve cached
+            // moments earlier may have picked WebM, which must not leak into a download.
+            val requestKey = if (preferMp4) "$videoId:mp4" else videoId
+            val cached = resultCache[requestKey]
             if (cached != null) {
                 if (System.currentTimeMillis() < cached.expiryMs && cached.result.isSuccess) {
                     Log.d(TAG, "Returning cached result for $videoId (expires in ${cached.expiryMs - System.currentTimeMillis()}ms)")
                     return@withContext cached.result
                 } else {
-                    resultCache.remove(videoId)
+                    resultCache.remove(requestKey)
                 }
             }
 
-            val existingRequest = activeRequests[videoId]
+            val existingRequest = activeRequests[requestKey]
             if (existingRequest != null && existingRequest.isActive) {
                 Log.d(TAG, "Reusing existing request for $videoId")
                 return@withContext existingRequest.await()
             }
 
             val deferred = CompletableDeferred<Result<PlaybackData>>()
-            val previousRequest = activeRequests.putIfAbsent(videoId, deferred)
+            val previousRequest = activeRequests.putIfAbsent(requestKey, deferred)
 
             if (previousRequest != null && previousRequest.isActive) {
                 Log.d(TAG, "Another thread started request for $videoId, waiting...")
@@ -180,13 +184,13 @@ object MusicPlayerUtils {
             }
 
             try {
-                val result = fetchPlaybackData(videoId, playlistId)
+                val result = fetchPlaybackData(videoId, playlistId, preferMp4)
                 deferred.complete(result)
 
                 if (result.isSuccess) {
                     val expiresInSec = result.getOrNull()?.streamExpiresInSeconds ?: 300
                     val ttlMs = minOf(expiresInSec * 1000L - 60_000L, MAX_RESULT_CACHE_TTL_MS).coerceAtLeast(30_000L)
-                    resultCache[videoId] = CachedResult(result, System.currentTimeMillis() + ttlMs)
+                    resultCache[requestKey] = CachedResult(result, System.currentTimeMillis() + ttlMs)
                     Log.d(TAG, "Cached result for $videoId, TTL=${ttlMs / 1000}s")
                 }
 
@@ -196,13 +200,14 @@ object MusicPlayerUtils {
                 deferred.complete(failure)
                 failure
             } finally {
-                activeRequests.remove(videoId, deferred)
+                activeRequests.remove(requestKey, deferred)
             }
         }
 
     private suspend fun fetchPlaybackData(
         videoId: String,
         playlistId: String?,
+        preferMp4: Boolean = false,
     ): Result<PlaybackData> =
         runCatching {
             val startTime = System.currentTimeMillis()
@@ -293,6 +298,7 @@ object MusicPlayerUtils {
                                     allowCipherFallback = false,
                                     allowNewPipeFallback = false,
                                     allowStreamInfoFallback = false,
+                                    preferMp4 = preferMp4,
                                 )
 
                             if (result != null) {
@@ -336,6 +342,7 @@ object MusicPlayerUtils {
                             allowCipherFallback = false,
                             allowNewPipeFallback = false,
                             allowStreamInfoFallback = false,
+                            preferMp4 = preferMp4,
                         )
                     if (extraction != null) {
                         response = mainPlayerResponse
@@ -362,6 +369,7 @@ object MusicPlayerUtils {
                             allowCipherFallback = true,
                             allowNewPipeFallback = true,
                             allowStreamInfoFallback = true,
+                            preferMp4 = preferMp4,
                         )
                     if (extraction != null) {
                         response = mainPlayerResponse
@@ -402,6 +410,7 @@ object MusicPlayerUtils {
                                         allowCipherFallback = true,
                                         allowNewPipeFallback = true,
                                         allowStreamInfoFallback = index == STREAM_FALLBACK_CLIENTS.lastIndex,
+                                        preferMp4 = preferMp4,
                                     )
 
                                 if (result != null) {
@@ -484,10 +493,11 @@ object MusicPlayerUtils {
         allowCipherFallback: Boolean = true,
         allowNewPipeFallback: Boolean = true,
         allowStreamInfoFallback: Boolean = true,
+        preferMp4: Boolean = false,
     ): Pair<PlayerResponse.StreamingData.Format, ResolvedUrl>? {
         if (response?.playabilityStatus?.status != "OK") return null
 
-        val format = findBestAudioFormat(response, audioPreferences, requireDirectUrl) ?: return null
+        val format = findBestAudioFormat(response, audioPreferences, requireDirectUrl, preferMp4) ?: return null
 
         val resolved =
             findUrlOrNull(
@@ -586,20 +596,31 @@ object MusicPlayerUtils {
         response: PlayerResponse,
         audioPreferences: AudioSelectionPreferences,
         requireDirectUrl: Boolean = false,
+        preferMp4: Boolean = false,
     ): PlayerResponse.StreamingData.Format? {
         val adaptiveFormats = response.streamingData?.adaptiveFormats ?: emptyList()
 
-        val audioFormats =
+        val eligibleFormats =
             adaptiveFormats.filter { format ->
-                format.mimeType.startsWith("audio/") &&
+                (format.mimeType.startsWith("audio/") || (preferMp4 && format.isMp4AudioFormat)) &&
                     format.audioTrack?.isAutoDubbed != true &&
                     (!requireDirectUrl || !format.url.isNullOrEmpty())
             }
 
-        if (audioFormats.isEmpty()) {
+        if (eligibleFormats.isEmpty()) {
             Log.d(TAG, "No audio formats found")
             return null
         }
+
+        // Downloads set preferMp4 so the file lands in MP4 — the only container with a tag-writing
+        // path (WebM/Opus has none). Fall back to the normal pool when this response carries no
+        // MP4 audio, so a download never fails over a container preference.
+        val audioFormats =
+            if (preferMp4) {
+                eligibleFormats.filter { it.isMp4AudioFormat }.ifEmpty { eligibleFormats }
+            } else {
+                eligibleFormats
+            }
 
         val preferredFormats = preferredAudioFormats(audioFormats, audioPreferences.preferredAudioLanguage)
 
@@ -608,6 +629,11 @@ object MusicPlayerUtils {
         Log.d(TAG, "Selected format: ${bestFormat?.mimeType}, bitrate: ${bestFormat?.bitrate}")
         return bestFormat
     }
+
+    // `isAudio` (no width) keeps muxed MP4 video out; YouTube reports audio-only MP4 as either
+    // video/mp4 (itag 140 on web clients) or audio/mp4 (Apple-style clients).
+    private val PlayerResponse.StreamingData.Format.isMp4AudioFormat: Boolean
+        get() = isAudio && (mimeType.startsWith("video/mp4") || mimeType.startsWith("audio/mp4"))
 
     private fun selectPreferredMusicFormat(
         formats: List<PlayerResponse.StreamingData.Format>,

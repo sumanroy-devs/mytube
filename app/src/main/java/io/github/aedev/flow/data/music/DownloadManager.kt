@@ -169,7 +169,10 @@ class DownloadManager
                         )
                     saveDownloadedTrack(downloadedTrack)
 
-                    val playbackData = MusicPlayerUtils.playerResponseForPlayback(track.videoId).getOrThrow()
+                    val playbackData =
+                        MusicPlayerUtils
+                            .playerResponseForPlayback(track.videoId, preferMp4 = true)
+                            .getOrThrow()
                     val streamUrl = playbackData.streamUrl
                     val contentLength = playbackData.format.contentLength
                     val downloadUrl =
@@ -180,8 +183,7 @@ class DownloadManager
                             streamUrl
                         }
 
-                    val extension = "mp3"
-                    val mimeType = "audio/mpeg"
+                    val container = audioContainerFor(playbackData.format.mimeType)
                     val quality =
                         playbackData.format.averageBitrate
                             ?.takeIf { it > 0 }
@@ -212,8 +214,8 @@ class DownloadManager
                         quality = quality,
                         audioOnly = true,
                         userAgent = playbackData.usedClient.userAgent,
-                        audioExtension = extension,
-                        audioMimeType = mimeType.ifBlank { "audio/mp4" },
+                        audioExtension = container.extension,
+                        audioMimeType = container.mimeType,
                         isMusic = true,
                     )
 
