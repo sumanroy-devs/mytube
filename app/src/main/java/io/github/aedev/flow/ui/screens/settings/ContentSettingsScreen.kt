@@ -102,7 +102,7 @@ fun ContentSettingsScreen(onBackClick: () -> Unit) {
     val channelNotesEnabled by preferences.channelNotesEnabled.collectAsState(initial = true)
     val videoNotesEnabled by preferences.videoNotesEnabled.collectAsState(initial = true)
     val refreshHomeOnReselect by preferences.refreshHomeOnReselect.collectAsState(initial = true)
-    val showAppLogoIcon by preferences.showAppLogoIcon.collectAsState(initial = true)
+    val showAppLogoIcon by preferences.showAppLogoIcon.collectAsState(initial = false)
     val currentRelatedCardStyle by preferences.playerRelatedCardStyle.collectAsState(initial = PlayerRelatedCardStyle.COMPACT)
     val hideWatchedVideosFromHome by preferences.hideWatchedVideosFromHome.collectAsState(initial = false)
     val hideWatchedVideosFromSubscriptions by preferences.hideWatchedVideosFromSubscriptions.collectAsState(initial = false)

@@ -2282,7 +2282,7 @@ class PlayerPreferences(
     // Show app logo icon in home screen top bar (default on)
     val showAppLogoIcon: Flow<Boolean> =
         context.playerPreferencesDataStore.data
-            .map { preferences -> preferences[Keys.SHOW_APP_LOGO_ICON] ?: true }
+            .map { preferences -> preferences[Keys.SHOW_APP_LOGO_ICON] ?: false }
 
     suspend fun setShowAppLogoIcon(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->
