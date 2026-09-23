@@ -1014,7 +1014,7 @@ class PlayerPreferences(
 
     val refreshHomeOnReselect: Flow<Boolean> =
         context.playerPreferencesDataStore.data
-            .map { preferences -> preferences[Keys.REFRESH_HOME_ON_RESELECT] ?: true }
+            .map { preferences -> preferences[Keys.REFRESH_HOME_ON_RESELECT] ?: false }
 
     suspend fun setRefreshHomeOnReselect(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->
