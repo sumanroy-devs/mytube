@@ -19,6 +19,9 @@ MyTube is a free, open-source, ad-free YouTube and YouTube Music client for Andr
 - Downloaded music keeps its metadata: files land with the correct type (`.m4a`/`.webm` instead of a mislabeled `.mp3`) and embedded title, artist, album and cover art
 - Unread notification count on the notifications action — exact number up to nine, then `9+` — in the top bar and the Shorts pill
 - Patreon/funding pointers removed from the repository, dead donation strings dropped
+- Videos that used to stop about a minute in now recover on their own: expired stream links are told apart from refused ones, a distrusted YouTube session rotates itself, and Settings → Diagnostics gains a Reset YouTube session action
+- Start radio from any song's menu — an endless station seeded from that track
+- Library shelf previews toggle in Settings → Content, plus improved section accent colors
 
 ## Highlights
 
