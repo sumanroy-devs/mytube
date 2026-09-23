@@ -7,21 +7,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.aedev.flow.R
+import io.github.aedev.flow.ui.components.layout.topbar.LocalFlowGlobalActions
 import io.github.aedev.flow.ui.components.videoplayer.controls.PlayerPillIconButton
 import io.github.aedev.flow.ui.theme.PlayerScrimContent
 
 private val TopBarHorizontalPadding = 16.dp
 private val BackButtonSize = 40.dp
 private val BackIconSize = 24.dp
+private val ActionButtonSize = 36.dp
+private val ActionIconSize = 20.dp
+private val ActionSpacing = 8.dp
 
 /**
  * The strip over the top of the reel: a back pill when the queue was opened from somewhere, the
@@ -33,9 +43,12 @@ internal fun ShortsTopBar(
     visible: Boolean,
     showBackButton: Boolean,
     onBack: () -> Unit,
+    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (!visible) return
+
+    val globalActions = LocalFlowGlobalActions.current
 
     Row(
         modifier =
@@ -61,6 +74,41 @@ internal fun ShortsTopBar(
                 fontWeight = FontWeight.Bold,
                 color = PlayerScrimContent,
             )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ActionSpacing),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PlayerPillIconButton(
+                onClick = onSearchClick,
+                icon = Icons.Outlined.Search,
+                contentDescription = stringResource(R.string.search),
+                buttonSize = ActionButtonSize,
+                iconSize = ActionIconSize,
+            )
+            if (globalActions != null) {
+                val unreadCount by globalActions.unreadNotifications.collectAsStateWithLifecycle()
+                PlayerPillIconButton(
+                    onClick = globalActions.onOpenNotifications,
+                    icon =
+                        if (unreadCount > 0) {
+                            Icons.Filled.Notifications
+                        } else {
+                            Icons.Outlined.Notifications
+                        },
+                    contentDescription = stringResource(R.string.notifications),
+                    buttonSize = ActionButtonSize,
+                    iconSize = ActionIconSize,
+                )
+                PlayerPillIconButton(
+                    onClick = globalActions.onOpenSettings,
+                    icon = Icons.Outlined.Settings,
+                    contentDescription = stringResource(R.string.settings),
+                    buttonSize = ActionButtonSize,
+                    iconSize = ActionIconSize,
+                )
+            }
         }
     }
 }

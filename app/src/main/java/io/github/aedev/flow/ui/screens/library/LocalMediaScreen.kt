@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +49,7 @@ import io.github.aedev.flow.ui.components.shared.MediaKindSelector
 @Composable
 fun LocalMediaScreen(
     onBackClick: () -> Unit,
+    onSearchClick: (MediaKind) -> Unit,
     onVideoClick: (LocalMediaItem) -> Unit,
     onMusicClick: (items: List<LocalMediaItem>, index: Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -91,6 +93,12 @@ fun LocalMediaScreen(
                 title = stringResource(R.string.local_media_title),
                 onBack = onBackClick,
                 actions = {
+                    IconButton(onClick = { onSearchClick(selectedKind) }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            contentDescription = stringResource(R.string.search),
+                        )
+                    }
                     IconButton(
                         onClick = {
                             if (hasAnyPermission()) {

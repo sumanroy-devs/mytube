@@ -67,6 +67,7 @@ private val SnackbarBottomPadding = 80.dp
 fun ShortsScreen(
     source: ShortsQueueSource,
     onBack: () -> Unit,
+    onSearchClick: () -> Unit,
     onChannelClick: (String) -> Unit,
     bottomNavOverlayPadding: Dp = 0.dp,
     modifier: Modifier = Modifier,
@@ -296,6 +297,7 @@ fun ShortsScreen(
             visible = uiState.shorts.isNotEmpty() && !isInPip,
             showBackButton = source != ShortsQueueSource.Feed,
             onBack = onBack,
+            onSearchClick = onSearchClick,
             modifier = Modifier.align(Alignment.TopCenter),
         )
 

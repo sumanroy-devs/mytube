@@ -70,6 +70,8 @@
     <string name="local_media_permission_title">Permission needed</string>
     <string name="local_media_permission_body">Allow access to your media so MyTube can find and play local videos and music.</string>
     <string name="local_media_grant">Grant access</string>
+    <string name="local_media_search_placeholder">Search local %1$s</string>
+    <string name="local_media_search_prompt">Search %1$s stored on this device</string>
     <string name="library_settings_data_header"><![CDATA[Settings & Data]]></string>
     <string name="library_manage_data_label">Manage Data</string>
     <string name="library_manage_data_subtitle">Clear cache and history</string>

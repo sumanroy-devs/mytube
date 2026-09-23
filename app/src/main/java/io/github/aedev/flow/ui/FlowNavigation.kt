@@ -153,6 +153,9 @@ fun NavGraphBuilder.flowAppGraph(
             onBack = {
                 navController.popBackStack()
             },
+            onSearchClick = {
+                navController.navigate("search")
+            },
             onChannelClick = { channelId ->
                 navController.navigateToYoutubeChannel(channelId)
             },
@@ -781,6 +784,69 @@ fun NavGraphBuilder.flowAppGraph(
 
         io.github.aedev.flow.ui.screens.library.LocalMediaScreen(
             onBackClick = { navController.popBackStack() },
+            onSearchClick = { kind ->
+                navController.navigate("localMediaSearch/${kind.name}")
+            },
+            onVideoClick = { item ->
+                val video =
+                    io.github.aedev.flow.data.model.Video(
+                        id =
+                            io.github.aedev.flow.ui.screens.library.LocalMediaViewModel
+                                .localMediaId(item),
+                        title = item.title,
+                        channelName = item.subtitle.ifBlank { "Local video" },
+                        channelId = "local",
+                        thumbnailUrl = item.contentUri,
+                        duration = (item.durationMs / 1000).toInt(),
+                        viewCount = 0,
+                        uploadDate = "",
+                        description = "",
+                    )
+                playerViewModel.playLocalVideo(video, item.contentUri)
+                GlobalPlayerState.setCurrentVideo(video)
+            },
+            onMusicClick = { items, index ->
+                val tracks =
+                    items.map { item ->
+                        MusicTrack(
+                            videoId =
+                                io.github.aedev.flow.ui.screens.library.LocalMediaViewModel
+                                    .localMediaId(item),
+                            title = item.title,
+                            artist = item.subtitle.ifBlank { "Local audio" },
+                            thumbnailUrl = item.artworkUri ?: "",
+                            duration = (item.durationMs / 1000).toInt(),
+                        )
+                    }
+                val localUris =
+                    items.associate { item ->
+                        io.github.aedev.flow.ui.screens.library.LocalMediaViewModel
+                            .localMediaId(item) to
+                            android.net.Uri.parse(item.contentUri)
+                    }
+                val selected = tracks[index]
+                musicPlayerViewModel.playLocalMusic(selected, tracks, localUris)
+
+                val encodedTitle = android.net.Uri.encode(selected.title)
+                val encodedArtist = android.net.Uri.encode(selected.artist)
+                val encodedUrl = android.net.Uri.encode(selected.thumbnailUrl)
+                navController.navigate("musicPlayer/${selected.videoId}?title=$encodedTitle&artist=$encodedArtist&thumbnailUrl=$encodedUrl")
+            },
+        )
+    }
+    composable(
+        route = "localMediaSearch/{kind}",
+        arguments = listOf(navArgument("kind") { type = NavType.StringType }),
+    ) { backStackEntry ->
+        currentRoute.value = "localMediaSearch"
+        showBottomNav.value = false
+
+        val musicPlayerViewModel = sharedMusicPlayerViewModel()
+
+        io.github.aedev.flow.ui.screens.library.LocalMediaSearchScreen(
+            onBack = {
+                if (!navController.popBackStack()) navController.navigate("localMedia")
+            },
             onVideoClick = { item ->
                 val video =
                     io.github.aedev.flow.data.model.Video(
