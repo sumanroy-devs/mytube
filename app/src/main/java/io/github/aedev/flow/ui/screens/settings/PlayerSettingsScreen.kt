@@ -160,7 +160,7 @@ fun PlayerSettingsScreen(onNavigateBack: () -> Unit) {
     val overlayCastEnabled by playerPreferences.overlayCastEnabled.collectAsState(overlayDefaults.castEnabled)
     val overlayCcEnabled by playerPreferences.overlayCcEnabled.collectAsState(overlayDefaults.captionsEnabled)
     val overlayPipEnabled by playerPreferences.overlayPipEnabled.collectAsState(overlayDefaults.pipEnabled)
-    val autoPipEnabled by playerPreferences.autoPipEnabled.collectAsState(initial = false)
+    val autoPipEnabled by playerPreferences.autoPipEnabled.collectAsState(initial = true)
     val overlayAutoplayEnabled by playerPreferences.overlayAutoplayEnabled.collectAsState(overlayDefaults.autoplayEnabled)
     val overlaySleepTimerEnabled by
         playerPreferences.overlaySleepTimerEnabled.collectAsState(overlayDefaults.sleepTimerEnabled)

@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 /** The playback preferences the activity lifecycle callbacks have to read synchronously. */
 data class LifecyclePlaybackSettings(
-    val autoPipEnabled: Boolean = false,
+    val autoPipEnabled: Boolean = true,
     val backgroundPlayEnabled: Boolean = false,
     val shortsBackgroundPlay: Boolean = false,
     val shortsPipEnabled: Boolean = false,

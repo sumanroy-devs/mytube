@@ -101,7 +101,7 @@ private fun PipParamsUpdateEffect(
 @Composable
 internal fun rememberPipPreferences(context: Context): PipPreferences {
     val preferences = remember(context) { PlayerPreferences(context) }
-    val autoPipEnabled by preferences.autoPipEnabled.collectAsStateWithLifecycle(initialValue = false)
+    val autoPipEnabled by preferences.autoPipEnabled.collectAsStateWithLifecycle(initialValue = true)
     val manualPipButtonEnabled by preferences.manualPipButtonEnabled.collectAsStateWithLifecycle(initialValue = true)
 
     return PipPreferences(
