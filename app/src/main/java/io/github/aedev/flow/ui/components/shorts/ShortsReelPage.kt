@@ -355,11 +355,8 @@ internal fun ShortsReelPage(
                     },
                     shareLabel = if (style.showRailLabels) stringResource(R.string.action_share) else "",
                     onShareClick = actions.onShareClick,
-                    moreLabel = if (style.showRailLabels) stringResource(R.string.cd_more_options) else "",
+                    moreLabel = if (style.showRailLabels) stringResource(R.string.action_more) else "",
                     onMoreClick = actions.onMoreClick,
-                    channelAvatarUrl = short.channelThumbnailUrl,
-                    channelName = short.channelName,
-                    isDiscSpinning = isActive && pageState.isPlaying,
                 )
             }
         }

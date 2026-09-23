@@ -1261,6 +1261,7 @@
     <string name="action_comments">Comments</string>
     <string name="action_save">Save</string>
     <string name="action_share">Share</string>
+    <string name="action_more">More</string>
     <string name="action_description">Description</string>
     <string name="action_subscribe">Subscribe</string>
     <string name="action_search">Search</string>
