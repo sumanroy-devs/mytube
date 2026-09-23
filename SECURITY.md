@@ -17,8 +17,8 @@ Always update to the newest release before reporting a security issue.
 **Do not report security vulnerabilities through public GitHub issues.**
 
 Report privately through
-[GitHub Security Advisories](https://github.com/A-EDev/Flow/security/advisories/new).
-If you cannot use that form, email <flow.aedev@gmail.com>.
+[GitHub Security Advisories](https://github.com/sumanroy-devs/mytube/security/advisories/new).
+If you cannot use that form, email <sumanroy.devs@outlook.com>.
 
 Please include:
 
@@ -35,24 +35,23 @@ Please do not disclose the issue publicly until a fix has shipped.
 
 ## Verifying release APKs
 
-Official Flow builds are signed with a single release key. Any APK that does
+Official MyTube builds are signed with a single release key. Any APK that does
 not match the fingerprint below is not an official build, regardless of where
 it was downloaded.
 
 ```
-SHA-256: 43:22:29:4E:D4:CA:A2:D4:29:41:40:09:58:18:08:0F:FE:8A:CC:1F:BE:3C:DC:76:10:7D:F4:5C:52:86:BE:40
+SHA-256: DE:74:50:2F:9B:58:00:A5:E2:60:5C:D7:01:54:4C:8D:17:E4:7D:F5:51:E6:21:45:B6:4F:4A:3B:45:DD:94:68
 ```
 
 Verify a downloaded APK with the Android SDK build tools:
 
 ```bash
-apksigner verify --print-certs flow-foss.apk
+apksigner verify --print-certs mytube-foss.apk
 ```
 
 The reported `Signer #1 certificate SHA-256 digest` must equal the fingerprint
 above (lower case, without colons).
 
-Official distribution channels are the
-[GitHub Releases page](https://github.com/A-EDev/Flow/releases) and
-[IzzyOnDroid](https://apt.izzysoft.de/packages/io.github.aedev.flow). Builds
+Official distribution is the
+[GitHub Releases page](https://github.com/sumanroy-devs/mytube/releases). Builds
 obtained anywhere else are unverified.

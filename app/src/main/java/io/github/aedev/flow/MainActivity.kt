@@ -881,7 +881,7 @@ class MainActivity : ComponentActivity() {
                 val request =
                     Request
                         .Builder()
-                        .url("https://api.github.com/repos/A-EDev/Flow/releases/latest")
+                        .url(UpdateManager.API_URL)
                         .header("Accept", "application/vnd.github.v3+json")
                         .build()
                 val response = client.newCall(request).execute()
@@ -904,7 +904,7 @@ class MainActivity : ComponentActivity() {
                                     .setTitle(getString(R.string.new_update_available))
                                     .setMessage(getString(R.string.update_download_prompt, latestTag))
                                     .setPositiveButton(getString(R.string.download)) { _, _ ->
-                                        ApkUpdateHelper.requestDownload(this@MainActivity, "https://github.com/A-EDev/Flow/releases/latest")
+                                        ApkUpdateHelper.requestDownload(this@MainActivity, UpdateManager.RELEASE_PAGE_URL)
                                     }.setNegativeButton(getString(R.string.maybe_later), null)
                                     .show()
                             }

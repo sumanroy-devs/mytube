@@ -63,6 +63,7 @@ import io.github.aedev.flow.ui.components.layout.topbar.FlowTopBar
 import io.github.aedev.flow.ui.theme.ThemeMode
 import io.github.aedev.flow.ui.theme.extendedColors
 import io.github.aedev.flow.utils.AppLanguageManager
+import io.github.aedev.flow.utils.UpdateManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -199,7 +200,7 @@ fun SettingsScreen(
                     val request =
                         Request
                             .Builder()
-                            .url("https://api.github.com/repos/A-EDev/Flow/releases/latest")
+                            .url(UpdateManager.API_URL)
                             .header("Accept", "application/vnd.github.v3+json")
                             .build()
                     val response = client.newCall(request).execute()
@@ -1355,7 +1356,7 @@ fun SettingsScreen(
                 confirmButton = {
                     Button(onClick = {
                         updateAvailableTag = null
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/A-EDev/Flow/releases/latest"))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(UpdateManager.RELEASE_PAGE_URL))
                         context.startActivity(intent)
                     }) {
                         Text(stringResource(R.string.download))

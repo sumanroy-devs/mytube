@@ -1,8 +1,8 @@
-# Contributing to Flow
+# Contributing to MyTube
 
-Thank you for your interest in contributing to Flow! We welcome contributions from the community.
+Thank you for your interest in contributing to MyTube! We welcome contributions from the community.
 
-Flow (`io.github.aedev.flow`) is an Android music/video app written in Kotlin with Jetpack Compose,
+MyTube (`io.github.aedev.flow`) is an Android music/video app written in Kotlin with Jetpack Compose,
 Hilt, and Media3/ExoPlayer. It plays YouTube content via a native InnerTube client with a
 NewPipe-based fallback extraction path, and supports local media playback, offline downloads,
 casting, lyrics, device-to-device sync, and an on-device recommendation engine (FlowNeuroEngine).
@@ -14,7 +14,7 @@ AI assistant, point it at `AGENTS.md`.
 
 ## ❓ Asking Questions About the Codebase
 
-**Use [GitHub Discussions](https://github.com/A-EDev/Flow/discussions) — that is the right place, and
+**Use [GitHub Discussions](https://github.com/sumanroy-devs/mytube/discussions) — that is the right place, and
 questions are welcome.** The codebase is deliberately light on comments (see "Comments" below), so
 asking is expected rather than a sign you missed something.
 
@@ -55,8 +55,8 @@ Feature suggestions are welcome! Please:
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/Flow.git
-cd Flow
+git clone https://github.com/YOUR_USERNAME/mytube.git
+cd mytube
 
 # Add upstream remote
 git remote add upstream https://github.com/A-EDev/Flow.git
@@ -69,7 +69,7 @@ Always pull the latest `main` before starting work, to minimize merge conflicts.
 
 ### Product Flavors
 
-Flow builds two flavors: `github` (default, in-app updater enabled) and `foss` (no updater).
+MyTube builds two flavors: `github` (default, in-app updater enabled) and `foss` (no updater).
 **Always use flavor-prefixed Gradle tasks** — `assembleGithubDebug`, `compileFossDebugKotlin` —
 never bare `assembleDebug` or `compileDebugKotlin`.
 
@@ -195,7 +195,7 @@ than one feature uses it, and duplicate no behaviour the library already provide
 
 ## ⚡ Performance, Battery, and Thermals — Non-Negotiable
 
-Flow is a media player that runs for hours at a time. Jank, dropped frames, playback stutter, device
+MyTube is a media player that runs for hours at a time. Jank, dropped frames, playback stutter, device
 heat, and battery drain are **critical bugs, not cosmetic issues**. Every rule below is anchored in a
 real shipped regression that had to be found and fixed on-device.
 
@@ -407,7 +407,7 @@ empty/error states, badges, formatters, or a second copy of a `shared/` componen
 
 ### Dependency injection
 
-Flow uses Hilt, but some legacy app-owned classes are still reached through static `getInstance()`
+MyTube uses Hilt, but some legacy app-owned classes are still reached through static `getInstance()`
 calls. Treat those as migration debt, not as a pattern to copy.
 
 1. **Use constructor injection by default** for new ViewModels, repositories, use cases, workers,
@@ -564,27 +564,27 @@ bump takes three times as long to review and is three times as likely to be reve
 
 ## 🔐 Release and Signing Invariants
 
-Flow is distributed through GitHub Releases and
-[IzzyOnDroid](https://apt.izzysoft.de/packages/io.github.aedev.flow). Both pin properties of the
-published artifacts, so the following are hard constraints. Breaking one of them cannot be fixed by a
+MyTube is distributed through
+[GitHub Releases](https://github.com/sumanroy-devs/mytube/releases). The published artifacts pin
+properties, so the following are hard constraints. Breaking one of them cannot be fixed by a
 follow-up release — it forces every installed user to uninstall and reinstall, losing their local
 data.
 
 **The signing key never changes.** Every release APK must be signed with the official key,
-certificate SHA-256 `4322294ed4caa2d4294140095818080ffe8acc1fbe3cdc76107df45c5286be40`. Android
+certificate SHA-256 `de74502f9b5800a5e2605cd701544c8d17e47df551e62145b64f4a3b45dd9468`. Android
 refuses to install an update signed by a different key. CI enforces this in the
 `Verify release signing certificate` step, which fails the build on a mismatch. Never regenerate
 `release.keystore`, and never rotate the `RELEASE_KEYSTORE_BASE64`, `STORE_PASSWORD`, `KEY_ALIAS`, or
 `KEY_PASSWORD` repository secrets.
 
-**Release asset file names are a public contract.** IzzyOnDroid matches release assets by file name.
-`flow.apk` and `flow-foss.apk` are the universal builds and must keep those exact names. The per-ABI
+**Release asset file names are a public contract.** Release feeds match assets by file name.
+`mytube.apk` and `mytube-foss.apk` are the universal builds and must keep those exact names. The per-ABI
 APKs are published alongside them as extras. Renaming or removing either universal APK silently
-breaks the IzzyOnDroid update feed, so coordinate with IzzyOnDroid before changing them.
+breaks every consumer that matches by file name, so update them all in the same change.
 
 **`versionCode` must increase on every release.** F-Droid-format repositories use it to detect
 updates. The ABI splits all share one `versionCode`, so the universal APK is the only artifact
-IzzyOnDroid should consume.
+a release feed should consume.
 
 **A tag build must never publish unsigned APKs.** `app/build.gradle.kts` falls back to
 `signingConfig = null` when no keystore is present, which produces uninstallable APKs. CI hard-fails
@@ -610,14 +610,14 @@ a `v*` tag build when the keystore secret is missing rather than publishing them
 
 ## ❓ Questions?
 
-- Open a [discussion](https://github.com/A-EDev/Flow/discussions) — including questions about how the
+- Open a [discussion](https://github.com/sumanroy-devs/mytube/discussions) — including questions about how the
   codebase works
 - Comment on existing issues
 - Reach out to maintainers
 
 ## 🙏 Thank You!
 
-Every contribution helps make Flow better. Thank you for being part of the community!
+Every contribution helps make MyTube better. Thank you for being part of the community!
 
 ---
 

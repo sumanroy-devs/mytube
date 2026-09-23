@@ -28,9 +28,9 @@ object UpdateManager {
     private val client: OkHttpClient
         get() = AppProxyManager.applyTo(OkHttpClient.Builder()).build()
     
-    // 🔥 CHANGE THIS TO YOUR REPO: "owner/repo"
-    private const val GITHUB_REPO = "A-EDev/Flow" 
-    private const val API_URL = "https://api.github.com/repos/$GITHUB_REPO/releases/latest"
+    private const val GITHUB_REPO = "sumanroy-devs/mytube"
+    const val API_URL = "https://api.github.com/repos/$GITHUB_REPO/releases/latest"
+    const val RELEASE_PAGE_URL = "https://github.com/$GITHUB_REPO/releases/latest"
 
     suspend fun checkForUpdate(currentVersionName: String): UpdateInfo? = withContext(Dispatchers.IO) {
         try {
@@ -112,18 +112,18 @@ object UpdateManager {
         supportedAbis: List<String>
     ): String? {
         val githubAssets = assets.filterNot {
-            it.name.startsWith("flow-foss-", ignoreCase = true)
+            it.name.startsWith("mytube-foss-", ignoreCase = true)
         }
         val splitAssets = githubAssets.filter {
-            it.name.equals("flow-arm64-v8a.apk", ignoreCase = true) ||
-                it.name.equals("flow-armeabi-v7a.apk", ignoreCase = true)
+            it.name.equals("mytube-arm64-v8a.apk", ignoreCase = true) ||
+                it.name.equals("mytube-armeabi-v7a.apk", ignoreCase = true)
         }
 
         if (splitAssets.isNotEmpty()) {
             val preferredNames = supportedAbis.mapNotNull { abi ->
                 when (abi) {
-                    "arm64-v8a" -> "flow-arm64-v8a.apk"
-                    "armeabi-v7a" -> "flow-armeabi-v7a.apk"
+                    "arm64-v8a" -> "mytube-arm64-v8a.apk"
+                    "armeabi-v7a" -> "mytube-armeabi-v7a.apk"
                     else -> null
                 }
             }
@@ -135,7 +135,7 @@ object UpdateManager {
         }
 
         return githubAssets.firstOrNull {
-            it.name.equals("flow.apk", ignoreCase = true)
+            it.name.equals("mytube.apk", ignoreCase = true)
         }?.downloadUrl ?: githubAssets.firstOrNull()?.downloadUrl
     }
 

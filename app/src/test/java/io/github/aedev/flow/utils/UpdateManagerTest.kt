@@ -6,9 +6,9 @@ import org.junit.Test
 class UpdateManagerTest {
 
     private val splitAssets = listOf(
-        ReleaseAsset("flow-armeabi-v7a.apk", "https://example.test/armv7"),
-        ReleaseAsset("flow-foss-arm64-v8a.apk", "https://example.test/foss-arm64"),
-        ReleaseAsset("flow-arm64-v8a.apk", "https://example.test/arm64")
+        ReleaseAsset("mytube-armeabi-v7a.apk", "https://example.test/armv7"),
+        ReleaseAsset("mytube-foss-arm64-v8a.apk", "https://example.test/foss-arm64"),
+        ReleaseAsset("mytube-arm64-v8a.apk", "https://example.test/arm64")
     )
 
     @Test
@@ -45,8 +45,8 @@ class UpdateManagerTest {
     fun selectApkDownloadUrl_legacyRelease_prefersGithubApk() {
         val url = UpdateManager.selectApkDownloadUrl(
             assets = listOf(
-                ReleaseAsset("flow-foss.apk", "https://example.test/foss"),
-                ReleaseAsset("flow.apk", "https://example.test/github")
+                ReleaseAsset("mytube-foss.apk", "https://example.test/foss"),
+                ReleaseAsset("mytube.apk", "https://example.test/github")
             ),
             supportedAbis = listOf("arm64-v8a")
         )

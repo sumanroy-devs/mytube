@@ -1,6 +1,6 @@
-# Working with Flow as an AI agent
+# Working with MyTube as an AI agent
 
-Flow (`io.github.aedev.flow`) — Android YouTube / YouTube Music client: Kotlin, Jetpack Compose Material 3, Hilt, Media3/ExoPlayer, native InnerTube client with NewPipeExtractor fallback, on-device recommendation engine (FlowNeuro). `CONTRIBUTING.md` is the full human-facing policy; the § names below point into it for rationale. This file is the operative digest.
+MyTube (`io.github.aedev.flow`) — Android YouTube / YouTube Music client: Kotlin, Jetpack Compose Material 3, Hilt, Media3/ExoPlayer, native InnerTube client with NewPipeExtractor fallback, on-device recommendation engine (FlowNeuro). `CONTRIBUTING.md` is the full human-facing policy; the § names below point into it for rationale. This file is the operative digest.
 
 ## Layout
 
@@ -36,7 +36,7 @@ Flow (`io.github.aedev.flow`) — Android YouTube / YouTube Music client: Kotlin
 
 - **Gitignored test fixtures**: `app/src/test/resources/{explore,shorts}/` are absent on a clean checkout, and their tests **skip** (JUnit `Assume`) — so a green unit-test run does *not* cover the explore/reel parsers. Regenerate only with the owner-local `notes/innertube-video-responses/*.py` probes against live YouTube. **Never hand-write a fixture** — a hand-written one once let four empty channel tabs ship. The tracked fixtures (`search/`, `channel/`, `sync/`, root `*.json`) stay tracked; don't relocate or gitignore them.
 - DataStore is pinned to 1.1.1: 1.2.1 breaks DataStore unit tests on Windows. Don't bump it.
-- Release signing: with no `release.keystore`, release builds silently fall back to **unsigned** APKs; CI pins the signer SHA-256 and hard-fails tag builds. Never regenerate the keystore, rotate the signing secrets, or rename `flow.apk`/`flow-foss.apk` (a public IzzyOnDroid contract). Details: CONTRIBUTING § Release and Signing Invariants.
+- Release signing: with no `release.keystore`, release builds silently fall back to **unsigned** APKs; CI pins the signer SHA-256 and hard-fails tag builds. Never regenerate `release.keystore`, rotate the `RELEASE_KEYSTORE_BASE64`/`STORE_PASSWORD`/`KEY_ALIAS`/`KEY_PASSWORD` secrets, or rename `mytube.apk`/`mytube-foss.apk` — each one breaks the update path. Details: CONTRIBUTING § Release and Signing Invariants.
 - Room schemas are committed at `app/schemas/`. Schema edits need explicit instruction + version bump + migration (migration tests live in androidTest).
 - Spotless uses `ratchetFrom`: any file you touch or move becomes fully ktlint-eligible (140 cols, import order, property naming) — the usual cause of a surprise red build during a refactor.
 - JSON is `kotlinx.serialization`; Gson exists only for legacy DTOs and carries an R8 reflection hazard — don't add Gson code. `re2j` is declared but referenced from no first-party source — verify before using *or* removing it.
