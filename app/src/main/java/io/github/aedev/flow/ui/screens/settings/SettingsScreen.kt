@@ -1231,6 +1231,20 @@ fun SettingsScreen(
                         }
                     }
                 }
+
+                // =================================================
+                // DEVELOPER
+                // =================================================
+                item { SectionHeader(text = stringResource(R.string.settings_header_developer)) }
+                item {
+                    SettingsGroup {
+                        SettingsItem(
+                            icon = painterResource(R.drawable.developer),
+                            title = stringResource(R.string.settings_developer_name),
+                            subtitle = stringResource(R.string.settings_developer_email),
+                        )
+                    }
+                }
             }
         }
     }

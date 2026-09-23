@@ -2288,6 +2288,9 @@
     <!-- Diagnostics screen -->
     <string name="settings_item_diagnostics">Diagnostics</string>
     <string name="settings_item_diagnostics_subtitle">View error logs and crash reports</string>
+    <string name="settings_header_developer">Developer</string>
+    <string name="settings_developer_name">Suman Roy</string>
+    <string name="settings_developer_email">sumanroy.devs@outlook.com</string>
     <string name="diagnostics_title">Diagnostics</string>
     <string name="diagnostics_report_subject">MyTube Diagnostics Report</string>
     <string name="diagnostics_tab_session">Session Logs</string>
