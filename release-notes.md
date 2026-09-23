@@ -15,6 +15,11 @@ MyTube is a free, open-source, ad-free YouTube and YouTube Music client for Andr
 - Smarter defaults out of the box: background play, auto Picture-in-Picture, overlay play/pause/lock/speed buttons, bottom nav always visible, no feed refresh on Home re-tap
 - Developer section in Settings; local media file URIs now survive manual next/previous
 - CI restored: Spotless/ktlint formatting checks run on every push
+- Save to watch history defaults to on
+- Trending region defaults to India (changeable in Settings)
+- Downloaded music keeps its metadata: files land with the correct type (`.m4a`/`.webm` instead of a mislabeled `.mp3`) and embedded title, artist, album and cover art
+- Unread notification count on the notifications action — exact number up to nine, then `9+` — in the top bar and the Shorts pill
+- Patreon/funding pointers removed from the repository, dead donation strings dropped
 
 ## Highlights from Flow 2.2.1
 
