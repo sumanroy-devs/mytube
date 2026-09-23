@@ -2,11 +2,10 @@
 
 **Release date:** 2026-09-23
 
-MyTube is a free, open-source, ad-free YouTube and YouTube Music client for Android. This is the first release published under the MyTube name, based on [Flow 2.2.1](https://github.com/a-edev/Flow).
+MyTube is a free, open-source, ad-free YouTube and YouTube Music client for Android. This is the first release published.
 
-## What's new in MyTube
+## What's new
 
-- Rebrand from Flow to MyTube throughout the app, docs and APK names; onboarding, the in-app splash and the About/Support/Donations screens are removed
 - New release signing key — verify installs against the certificate fingerprint below
 - Dedicated Library search across history, playlists, likes and downloads, with the search icon leading every Library top bar
 - Search the media stored on your device: the Local media screen gets its own tab-aware search (Videos tab searches videos, Music tab searches music)
@@ -21,7 +20,7 @@ MyTube is a free, open-source, ad-free YouTube and YouTube Music client for Andr
 - Unread notification count on the notifications action — exact number up to nine, then `9+` — in the top bar and the Shorts pill
 - Patreon/funding pointers removed from the repository, dead donation strings dropped
 
-## Highlights from Flow 2.2.1
+## Highlights
 
 - Native YouTube and YouTube Music playback with a NewPipeExtractor fallback
 - Shorts player with comments, description, downloads, Picture-in-Picture and configurable playback modes
