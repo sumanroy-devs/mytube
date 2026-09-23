@@ -885,7 +885,7 @@ class PlayerPreferences(
     val bottomNavHideOnScroll: Flow<Boolean> =
         context.playerPreferencesDataStore.data
             .map { preferences ->
-                preferences[Keys.BOTTOM_NAV_HIDE_ON_SCROLL] ?: true
+                preferences[Keys.BOTTOM_NAV_HIDE_ON_SCROLL] ?: false
             }
 
     suspend fun setBottomNavHideOnScroll(enabled: Boolean) {

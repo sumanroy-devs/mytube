@@ -111,7 +111,7 @@ fun ContentSettingsScreen(onBackClick: () -> Unit) {
         initial = io.github.aedev.flow.data.local.WatchedThreshold.ALMOST_FINISHED,
     )
     var showWatchedThresholdDialog by remember { mutableStateOf(false) }
-    val bottomNavHideOnScroll by preferences.bottomNavHideOnScroll.collectAsState(initial = true)
+    val bottomNavHideOnScroll by preferences.bottomNavHideOnScroll.collectAsState(initial = false)
     val shareWithoutText by preferences.shareWithoutText.collectAsState(initial = false)
     val disableShortsPlayer by preferences.disableShortsPlayer.collectAsState(initial = false)
     val showShortsPlayerPrompt by preferences.showShortsPlayerPrompt.collectAsState(initial = true)
