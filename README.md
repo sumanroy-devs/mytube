@@ -33,7 +33,7 @@ MyTube gives you both. The recommendation engine learns what you like by analyzi
 - Synchronized lyrics display
 - Fetches tracks from YouTube Music
 
-### Recommendations (FlowNeuro Engine)
+### Recommendations (Neuro Engine)
 
 - Runs 100% on-device — no server, no telemetry, no account needed
 - Learns from what you watch, skip, like, dislike, search for, and how long you watch
