@@ -2,21 +2,18 @@ package io.github.aedev.flow.ui.screens.library
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PermMedia
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.VideoLibrary
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -45,7 +42,6 @@ fun LibraryScreen(
     onNavigateToSavedShorts: () -> Unit,
     onNavigateToDownloads: () -> Unit,
     onNavigateToLocalMedia: () -> Unit,
-    onManageData: () -> Unit,
     onVideoClick: (Video) -> Unit,
     onMusicClick: (MusicTrack, List<MusicTrack>, String) -> Unit,
     onPlaylistClick: (String) -> Unit,
@@ -67,7 +63,19 @@ fun LibraryScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
-        topBar = { FlowTopBar(title = stringResource(R.string.library)) },
+        topBar = {
+            FlowTopBar(
+                title = stringResource(R.string.library),
+                actions = {
+                    IconButton(onClick = onNavigateToLocalMedia) {
+                        Icon(
+                            imageVector = Icons.Outlined.PermMedia,
+                            contentDescription = stringResource(R.string.library_local_media_label),
+                        )
+                    }
+                },
+            )
+        },
     ) { padding ->
         LazyColumn(
             modifier =
@@ -158,29 +166,6 @@ fun LibraryScreen(
                 }
             }
 
-            item(key = "settings-data", contentType = "navigation-section") {
-                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                    Text(
-                        text = stringResource(R.string.library_settings_data_header),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-                    )
-                    LibraryNavigationRow(
-                        icon = Icons.Outlined.PermMedia,
-                        title = stringResource(R.string.library_local_media_label),
-                        subtitle = stringResource(R.string.library_local_media_subtitle),
-                        onClick = onNavigateToLocalMedia,
-                    )
-                    LibraryNavigationRow(
-                        icon = Icons.Outlined.Settings,
-                        title = stringResource(R.string.settings),
-                        subtitle = stringResource(R.string.library_settings_subtitle),
-                        onClick = onManageData,
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }
         }
     }
 }

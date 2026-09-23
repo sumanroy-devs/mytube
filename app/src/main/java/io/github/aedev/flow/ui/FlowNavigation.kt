@@ -213,9 +213,6 @@ fun NavGraphBuilder.flowAppGraph(
             onNavigateToLocalMedia = {
                 navController.navigate("localMedia")
             },
-            onManageData = {
-                navController.navigate("settings")
-            },
             onVideoClick = { video ->
                 navController.openVideoOrShorts(video, disableShortsPlayer) { navController.navigateToPlayer(it.id) }
             },
