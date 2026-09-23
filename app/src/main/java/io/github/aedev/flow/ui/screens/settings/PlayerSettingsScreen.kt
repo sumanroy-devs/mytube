@@ -176,7 +176,7 @@ fun PlayerSettingsScreen(onNavigateBack: () -> Unit) {
     val manualPipButtonEnabled by playerPreferences.manualPipButtonEnabled.collectAsState(initial = true)
     val backgroundPlayEnabled by playerPreferences.backgroundPlayEnabled.collectAsState(initial = true)
     val shortsBackgroundPlay by playerPreferences.shortsBackgroundPlay.collectAsState(initial = false)
-    val shortsPlaybackMode by playerPreferences.shortsPlaybackMode.collectAsState(initial = "loop")
+    val shortsPlaybackMode by playerPreferences.shortsPlaybackMode.collectAsState(initial = "auto_next")
     val shortsPipEnabled by playerPreferences.shortsPipEnabled.collectAsState(initial = false)
     val shortsAutoScrollSeconds by playerPreferences.shortsAutoScrollSeconds.collectAsState(initial = 10)
     val shortsQueueContinuesIntoFeed by playerPreferences.shortsQueueContinuesIntoFeed.collectAsState(initial = true)

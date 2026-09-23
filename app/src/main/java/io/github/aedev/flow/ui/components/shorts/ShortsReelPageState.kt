@@ -74,7 +74,7 @@ internal class ShortsReelAutoAdvanceState {
 
 @Composable
 internal fun rememberShortsReelSettings(playerPreferences: PlayerPreferences): ShortsReelSettings {
-    val playbackMode by playerPreferences.shortsPlaybackMode.collectAsState(initial = SHORTS_PLAYBACK_LOOP)
+    val playbackMode by playerPreferences.shortsPlaybackMode.collectAsState(initial = SHORTS_PLAYBACK_AUTO_NEXT)
     val autoScrollSeconds by playerPreferences.shortsAutoScrollSeconds.collectAsState(initial = 10)
     val uiMode by playerPreferences.shortsPlayerUiMode.collectAsState(initial = ShortsPlayerUiMode.DEFAULT)
     val ambientModeEnabled by playerPreferences.videoAmbientModeEnabled.collectAsState(initial = false)

@@ -134,7 +134,7 @@ class ShortsPlayerPool private constructor() {
 
     private var poolScope: CoroutineScope? = null
     private var preferredAudioLanguage: String = "original"
-    private var shortsPlaybackMode: String = "loop"
+    private var shortsPlaybackMode: String = "auto_next"
     private var basePlaybackSpeed: Float = 1f
 
     private val preferenceObservers = ShortsPreferenceObservers()

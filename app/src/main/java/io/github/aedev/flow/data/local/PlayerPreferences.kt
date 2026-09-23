@@ -272,7 +272,7 @@ class PlayerPreferences(
         // Shorts background playback
         val SHORTS_BACKGROUND_PLAY = booleanPreferencesKey("shorts_background_play")
 
-        // Shorts playback mode: "loop" (default), "auto_next", or "auto_interval"
+        // Shorts playback mode: "loop", "auto_next" (default), or "auto_interval"
         val SHORTS_PLAYBACK_MODE = stringPreferencesKey("shorts_playback_mode")
         val SHORTS_AUTO_SCROLL_SECONDS = intPreferencesKey("shorts_auto_scroll_seconds")
         val SHORTS_QUEUE_CONTINUE_INTO_FEED = booleanPreferencesKey("shorts_queue_continue_into_feed")
@@ -2076,11 +2076,11 @@ class PlayerPreferences(
         }
     }
 
-    // Shorts playback mode (default LOOP — repeats the current short)
+    // Shorts playback mode (default AUTO_NEXT — advances to the next short)
     val shortsPlaybackMode: Flow<String> =
         context.playerPreferencesDataStore.data
             .map { preferences ->
-                preferences[Keys.SHORTS_PLAYBACK_MODE] ?: "loop"
+                preferences[Keys.SHORTS_PLAYBACK_MODE] ?: "auto_next"
             }
 
     suspend fun setShortsPlaybackMode(mode: String) {
