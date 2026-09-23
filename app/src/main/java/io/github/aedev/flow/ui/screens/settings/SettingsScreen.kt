@@ -148,7 +148,7 @@ fun SettingsScreen(
     val deepFlowActive by playerPreferences.deepFlowActive.collectAsState(initial = false)
     val deepFlowActivatedAt by playerPreferences.deepFlowActivatedAt.collectAsState(initial = 0L)
     val deepFlowExpireHours by playerPreferences.deepFlowExpireHours.collectAsState(initial = 4)
-    val deepFlowSaveHistory by playerPreferences.deepFlowSaveToHistory.collectAsState(initial = false)
+    val deepFlowSaveHistory by playerPreferences.deepFlowSaveToHistory.collectAsState(initial = true)
     var showDeepFlowDurationDialog by remember { mutableStateOf(false) }
 
     val deepFlowRemainingLabel: String? =

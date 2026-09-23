@@ -2808,7 +2808,7 @@ class PlayerPreferences(
 
     val deepFlowSaveToHistory: Flow<Boolean> =
         context.playerPreferencesDataStore.data
-            .map { preferences -> preferences[Keys.DEEP_FLOW_SAVE_HISTORY] ?: false }
+            .map { preferences -> preferences[Keys.DEEP_FLOW_SAVE_HISTORY] ?: true }
 
     suspend fun setDeepFlowSaveToHistory(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->
@@ -2817,7 +2817,7 @@ class PlayerPreferences(
     }
 
     suspend fun isDeepFlowSaveToHistoryEnabled(): Boolean =
-        context.playerPreferencesDataStore.data.first()[Keys.DEEP_FLOW_SAVE_HISTORY] ?: false
+        context.playerPreferencesDataStore.data.first()[Keys.DEEP_FLOW_SAVE_HISTORY] ?: true
 
     suspend fun setDeepFlowActive(enabled: Boolean) {
         context.playerPreferencesDataStore.edit { preferences ->
