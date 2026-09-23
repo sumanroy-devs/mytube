@@ -1055,7 +1055,7 @@ class PlayerPreferences(
     val trendingRegion: Flow<String> =
         context.playerPreferencesDataStore.data
             .map { preferences ->
-                preferences[Keys.TRENDING_REGION] ?: "US"
+                preferences[Keys.TRENDING_REGION] ?: "IN"
             }
 
     suspend fun setTrendingRegion(region: String) {

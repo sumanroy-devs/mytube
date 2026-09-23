@@ -37,7 +37,7 @@ fun MusicRecommendationsSection(
 ) {
     val endlessRadioEnabled by preferences.musicEndlessRadioEnabled.collectAsState(initial = true)
     val contentLanguage by preferences.contentLanguage.collectAsState(initial = CONTENT_LANGUAGE_FOLLOW_APP)
-    val contentCountry by preferences.trendingRegion.collectAsState(initial = "US")
+    val contentCountry by preferences.trendingRegion.collectAsState(initial = "IN")
     var showLanguageDialog by remember { mutableStateOf(false) }
     var showCountryDialog by remember { mutableStateOf(false) }
 

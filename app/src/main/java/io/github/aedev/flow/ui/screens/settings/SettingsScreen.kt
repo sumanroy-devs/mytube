@@ -129,7 +129,7 @@ fun SettingsScreen(
     var updateAvailableTag by remember { mutableStateOf<String?>(null) }
 
     // Player preferences states
-    val currentRegion by playerPreferences.trendingRegion.collectAsState(initial = "US")
+    val currentRegion by playerPreferences.trendingRegion.collectAsState(initial = "IN")
     val currentAppLanguage by playerPreferences.appLanguage.collectAsState(initial = AppLanguageManager.SYSTEM_DEFAULT)
     val discordSettingsState by DiscordPresenceRuntime.settingsState.collectAsStateWithLifecycle()
     val discordSettingsSummary = discordSettingsSummaryText(discordSettingsState)

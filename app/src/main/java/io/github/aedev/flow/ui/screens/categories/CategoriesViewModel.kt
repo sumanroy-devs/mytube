@@ -73,7 +73,7 @@ class CategoriesViewModel
         val uiState: StateFlow<CategoriesUiState> = _uiState.asStateFlow()
 
         val trendingRegion: StateFlow<String> =
-            preferences.trendingRegion.stateIn(viewModelScope, SharingStarted.WhileSubscribed(SUBSCRIPTION_GRACE_MS), "US")
+            preferences.trendingRegion.stateIn(viewModelScope, SharingStarted.WhileSubscribed(SUBSCRIPTION_GRACE_MS), "IN")
 
         private data class GridKey(
             val browseId: String,
