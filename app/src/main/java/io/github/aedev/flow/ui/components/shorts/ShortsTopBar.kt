@@ -1,8 +1,10 @@
 package io.github.aedev.flow.ui.components.shorts
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.aedev.flow.R
 import io.github.aedev.flow.ui.components.layout.topbar.LocalFlowGlobalActions
+import io.github.aedev.flow.ui.components.shared.FlowCountBadge
 import io.github.aedev.flow.ui.components.videoplayer.controls.PlayerPillIconButton
 import io.github.aedev.flow.ui.theme.PlayerScrimContent
 
@@ -89,18 +92,24 @@ internal fun ShortsTopBar(
             )
             if (globalActions != null) {
                 val unreadCount by globalActions.unreadNotifications.collectAsStateWithLifecycle()
-                PlayerPillIconButton(
-                    onClick = globalActions.onOpenNotifications,
-                    icon =
-                        if (unreadCount > 0) {
-                            Icons.Filled.Notifications
-                        } else {
-                            Icons.Outlined.Notifications
-                        },
-                    contentDescription = stringResource(R.string.notifications),
-                    buttonSize = ActionButtonSize,
-                    iconSize = ActionIconSize,
-                )
+                Box(contentAlignment = Alignment.TopEnd) {
+                    PlayerPillIconButton(
+                        onClick = globalActions.onOpenNotifications,
+                        icon =
+                            if (unreadCount > 0) {
+                                Icons.Filled.Notifications
+                            } else {
+                                Icons.Outlined.Notifications
+                            },
+                        contentDescription = stringResource(R.string.notifications),
+                        buttonSize = ActionButtonSize,
+                        iconSize = ActionIconSize,
+                    )
+                    FlowCountBadge(
+                        count = unreadCount,
+                        modifier = Modifier.offset(x = 6.dp, y = (-4).dp),
+                    )
+                }
                 PlayerPillIconButton(
                     onClick = globalActions.onOpenSettings,
                     icon = Icons.Outlined.Settings,
