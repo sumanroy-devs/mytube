@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PermMedia
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.VideoLibrary
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +43,7 @@ fun LibraryScreen(
     onNavigateToSavedShorts: () -> Unit,
     onNavigateToDownloads: () -> Unit,
     onNavigateToLocalMedia: () -> Unit,
+    onSearchClick: () -> Unit,
     onVideoClick: (Video) -> Unit,
     onMusicClick: (MusicTrack, List<MusicTrack>, String) -> Unit,
     onPlaylistClick: (String) -> Unit,
@@ -67,6 +69,12 @@ fun LibraryScreen(
             FlowTopBar(
                 title = stringResource(R.string.library),
                 actions = {
+                    IconButton(onClick = onSearchClick) {
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            contentDescription = stringResource(R.string.search),
+                        )
+                    }
                     IconButton(onClick = onNavigateToLocalMedia) {
                         Icon(
                             imageVector = Icons.Outlined.PermMedia,

@@ -1,22 +1,19 @@
 package io.github.aedev.flow.ui.screens.music
 
 import android.content.Intent
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import io.github.aedev.flow.R
 import io.github.aedev.flow.data.music.model.MusicItemType
@@ -172,12 +168,6 @@ fun EnhancedMusicScreen(
     }
 
     val bottomChrome = bottomNavOverlayPadding() + LocalMusicMiniPlayerInset.current
-    val fabLift =
-        animateDpAsState(
-            targetValue = bottomChrome,
-            animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
-            label = "musicRecognizeFabLift",
-        )
 
     Scaffold(
         topBar = {
@@ -187,16 +177,11 @@ fun EnhancedMusicScreen(
                     IconButton(onClick = onSearchClick) {
                         Icon(Icons.Outlined.Search, stringResource(R.string.search))
                     }
+                    IconButton(onClick = onRecognizeClick) {
+                        Icon(Icons.Outlined.MusicNote, stringResource(R.string.recognize_music))
+                    }
                 },
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onRecognizeClick,
-                modifier = Modifier.offset { IntOffset(x = 0, y = -fabLift.value.roundToPx()) },
-            ) {
-                Icon(Icons.Rounded.Mic, stringResource(R.string.recognize_music))
-            }
         },
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = WindowInsets(0.dp),

@@ -35,6 +35,7 @@ import io.github.aedev.flow.ui.screens.history.HistoryScreen
 import io.github.aedev.flow.ui.screens.home.HomeScreen
 import io.github.aedev.flow.ui.screens.home.HomeViewModel
 import io.github.aedev.flow.ui.screens.library.LibraryScreen
+import io.github.aedev.flow.ui.screens.library.LibrarySearchScreen
 import io.github.aedev.flow.ui.screens.likedvideos.LikesScreen
 import io.github.aedev.flow.ui.screens.music.ArtistPage
 import io.github.aedev.flow.ui.screens.music.EnhancedMusicScreen
@@ -213,6 +214,9 @@ fun NavGraphBuilder.flowAppGraph(
             onNavigateToLocalMedia = {
                 navController.navigate("localMedia")
             },
+            onSearchClick = {
+                navController.navigate("librarySearch")
+            },
             onVideoClick = { video ->
                 navController.openVideoOrShorts(video, disableShortsPlayer) { navController.navigateToPlayer(it.id) }
             },
@@ -247,6 +251,54 @@ fun NavGraphBuilder.flowAppGraph(
             },
             onSavedShortClick = { video ->
                 navController.openShortsOrPlayer(ShortsQueueSource.Saved(video.id), disableShortsPlayer)
+            },
+        )
+    }
+
+    composable("librarySearch") {
+        currentRoute.value = "librarySearch"
+        showBottomNav.value = false
+        selectedBottomNavIndex.intValue = 4
+        val musicPlayerViewModel = sharedMusicPlayerViewModel()
+        val downloadsSourceName =
+            androidx.compose.ui.res.stringResource(
+                io.github.aedev.flow.R.string.library_downloads_label,
+            )
+        LibrarySearchScreen(
+            onBack = {
+                if (!navController.popBackStack()) navController.navigate("library")
+            },
+            onVideoClick = { video ->
+                navController.openVideoOrShorts(video, disableShortsPlayer) { navController.navigateToPlayer(it.id) }
+            },
+            onMusicClick = { track, queue, sourceName ->
+                musicPlayerViewModel.loadAndPlayTrack(track, queue, sourceName)
+                val encodedUrl = android.net.Uri.encode(track.thumbnailUrl)
+                val encodedTitle = android.net.Uri.encode(track.title)
+                val encodedArtist = android.net.Uri.encode(track.artist)
+                navController.navigate("musicPlayer/${track.videoId}?title=$encodedTitle&artist=$encodedArtist&thumbnailUrl=$encodedUrl")
+            },
+            onPlaylistClick = { playlistId ->
+                navController.navigate("playlist/$playlistId")
+            },
+            onMusicPlaylistClick = { playlistId ->
+                navController.navigate("musicPlaylist/$playlistId")
+            },
+            onDownloadedVideoClick = { videos, index ->
+                val videoList = videos.map { it.video }
+                playerViewModel.playPlaylist(videoList, index, downloadsSourceName)
+                GlobalPlayerState.setCurrentVideo(videoList[index])
+            },
+            onDownloadedMusicClick = { tracks, index ->
+                val musicTracks = tracks.map { it.track }
+                val selectedTrack = musicTracks[index]
+                musicPlayerViewModel.loadAndPlayTrack(selectedTrack, musicTracks, downloadsSourceName)
+                val encodedUrl = android.net.Uri.encode(selectedTrack.thumbnailUrl)
+                val encodedTitle = android.net.Uri.encode(selectedTrack.title)
+                val encodedArtist = android.net.Uri.encode(selectedTrack.artist)
+                navController.navigate(
+                    "musicPlayer/${selectedTrack.videoId}?title=$encodedTitle&artist=$encodedArtist&thumbnailUrl=$encodedUrl",
+                )
             },
         )
     }
@@ -1122,6 +1174,7 @@ fun NavGraphBuilder.flowAppGraph(
                 musicViewModel.loadDailyMixPage(playlistId)
             } else {
                 musicViewModel.fetchPlaylistDetails(playlistId)
+                   musicViewModel.fetchPlaylistDetails(playlistId)
             }
         }
 

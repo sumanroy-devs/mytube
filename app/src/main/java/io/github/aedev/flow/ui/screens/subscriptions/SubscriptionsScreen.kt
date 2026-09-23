@@ -207,17 +207,17 @@ fun SubscriptionsScreen(
                 FlowTopBar(
                     title = stringResource(R.string.top_bar_subscriptions_title),
                     actions = {
+                        IconButton(onClick = { isManagingSubs = true }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Search,
+                                contentDescription = stringResource(R.string.search_subscriptions),
+                            )
+                        }
                         IconButton(onClick = { viewModel.toggleViewMode() }) {
                             Icon(
                                 imageVector =
                                     if (uiState.isFullWidthView) Icons.AutoMirrored.Filled.ViewList else Icons.Default.GridView,
                                 contentDescription = stringResource(R.string.toggle_view_mode),
-                            )
-                        }
-                        IconButton(onClick = { isManagingSubs = true }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Search,
-                                contentDescription = stringResource(R.string.search_subscriptions),
                             )
                         }
                     },

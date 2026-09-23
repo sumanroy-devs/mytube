@@ -60,6 +60,8 @@
     <string name="library_downloads_label">Downloads</string>
     <string name="library_local_media_label">Local media</string>
     <string name="library_local_media_subtitle">Play videos and music on this device</string>
+    <string name="library_search_placeholder">Search your library</string>
+    <string name="library_search_prompt">Search history, playlists, likes and downloads</string>
     <string name="local_media_title">Local media</string>
     <string name="local_media_rescan">Rescan</string>
     <string name="local_media_scanning">Scanning your device…</string>
