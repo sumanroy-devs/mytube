@@ -37,6 +37,12 @@ jobs:
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
 
+      # The Spotless ratchet is pinned to 52c4928 (upstream's linting-intro
+      # commit), which is absent from this fork's rewritten history. Restore
+      # it from upstream so GitRatchet can resolve the baseline.
+      - name: Fetch Spotless ratchet baseline
+        run: git fetch https://github.com/A-EDev/Flow.git 52c4928e5af05141080f46f6c1e41cbf9c457023
+
       - name: Set up JDK 17
         uses: actions/setup-java@v6
         with:

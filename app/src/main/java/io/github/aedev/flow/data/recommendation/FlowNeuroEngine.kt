@@ -84,8 +84,7 @@ class FlowNeuroEngine(
                 }
             }
 
-        private fun requireInstance(): FlowNeuroEngine =
-            instance ?: error("MyTube engine not initialized. Call initialize(context) first.")
+        private fun requireInstance(): FlowNeuroEngine = instance ?: error("MyTube engine not initialized. Call initialize(context) first.")
 
         // ── Backward-compatible forwarding API ──
 

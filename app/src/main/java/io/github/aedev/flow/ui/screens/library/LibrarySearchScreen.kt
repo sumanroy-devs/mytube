@@ -68,24 +68,28 @@ fun LibrarySearchScreen(
     ) { padding ->
         val contentModifier = modifier.fillMaxSize().padding(padding).background(background)
         when {
-            query.isBlank() ->
+            query.isBlank() -> {
                 FlowEmptyState(
                     title = stringResource(R.string.library_search_prompt),
                     icon = Icons.Outlined.Search,
                     modifier = contentModifier,
                 )
+            }
 
             // The query is live but its source lists have not landed; stay blank rather than flash "no results".
-            sections == null -> Unit
+            sections == null -> {
+                Unit
+            }
 
-            sections.isEmpty() ->
+            sections.isEmpty() -> {
                 FlowEmptyState(
                     title = stringResource(R.string.no_results_found),
                     icon = Icons.Outlined.Search,
                     modifier = contentModifier,
                 )
+            }
 
-            else ->
+            else -> {
                 LazyColumn(
                     modifier = contentModifier,
                     contentPadding = ListContentPadding,
@@ -145,7 +149,7 @@ fun LibrarySearchScreen(
                                     )
                                 }
 
-                                is LibrarySearchRow.Media ->
+                                is LibrarySearchRow.Media -> {
                                     when (val item = row.item) {
                                         is LibraryMediaItem.VideoItem -> {
                                             val video = item.video
@@ -164,12 +168,13 @@ fun LibrarySearchScreen(
                                             )
                                         }
 
-                                        is LibraryMediaItem.MusicItem ->
+                                        is LibraryMediaItem.MusicItem -> {
                                             MusicTrackItem(
                                                 track = item.track,
                                                 onClick = { onMusicClick(item.track, musicQueue, sectionTitle) },
                                                 showMenu = false,
                                             )
+                                        }
 
                                         is LibraryMediaItem.DownloadedVideoItem -> {
                                             val video = item.download.video
@@ -205,10 +210,12 @@ fun LibrarySearchScreen(
                                             )
                                         }
                                     }
+                                }
                             }
                         }
                     }
                 }
+            }
         }
     }
 }
@@ -229,17 +236,25 @@ private fun LibrarySearchSectionHeader(title: String) {
 
 private fun searchRowKey(row: LibrarySearchRow): String =
     when (row) {
-        is LibrarySearchRow.Playlist ->
+        is LibrarySearchRow.Playlist -> {
             if (row.isMusic) "music-playlist:${row.playlist.id}" else "playlist:${row.playlist.id}"
-        is LibrarySearchRow.Media -> row.item.key
+        }
+
+        is LibrarySearchRow.Media -> {
+            row.item.key
+        }
     }
 
 private fun searchRowContentType(row: LibrarySearchRow): String =
     when (row) {
-        is LibrarySearchRow.Playlist -> "playlist"
-        is LibrarySearchRow.Media ->
+        is LibrarySearchRow.Playlist -> {
+            "playlist"
+        }
+
+        is LibrarySearchRow.Media -> {
             when (row.item) {
                 is LibraryMediaItem.VideoItem, is LibraryMediaItem.DownloadedVideoItem -> "video"
                 is LibraryMediaItem.MusicItem, is LibraryMediaItem.DownloadedMusicItem -> "music"
             }
+        }
     }

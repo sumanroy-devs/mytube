@@ -58,8 +58,10 @@ internal fun buildLibrarySearchSections(
     val needle = query.trim()
     if (needle.isEmpty()) return emptyList()
 
-    fun matches(title: String, subtitle: String) =
-        title.contains(needle, ignoreCase = true) || subtitle.contains(needle, ignoreCase = true)
+    fun matches(
+        title: String,
+        subtitle: String,
+    ) = title.contains(needle, ignoreCase = true) || subtitle.contains(needle, ignoreCase = true)
 
     fun nameMatches(name: String) = name.contains(needle, ignoreCase = true)
 
@@ -101,13 +103,14 @@ internal fun buildLibrarySearchSections(
     }
 
     val downloads =
-        (sources.downloadedVideos
+        (
+            sources.downloadedVideos
                 .filter { matches(it.video.title, it.video.channelName) }
                 .map { it.downloadedAt to LibrarySearchRow.Media(LibraryMediaItem.DownloadedVideoItem(it)) } +
                 sources.downloadedTracks
                     .filter { matches(it.track.title, it.track.artist) }
-                    .map { it.downloadedAt to LibrarySearchRow.Media(LibraryMediaItem.DownloadedMusicItem(it)) })
-            .sortedByDescending { it.first }
+                    .map { it.downloadedAt to LibrarySearchRow.Media(LibraryMediaItem.DownloadedMusicItem(it)) }
+        ).sortedByDescending { it.first }
             .map { it.second }
     if (downloads.isNotEmpty()) {
         sections += LibrarySearchSection("downloads", R.string.library_downloads_label, downloads)

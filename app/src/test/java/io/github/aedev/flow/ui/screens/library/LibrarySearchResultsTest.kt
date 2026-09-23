@@ -14,53 +14,71 @@ import org.junit.Test
 
 /** Pure coverage for the library search's grouping, matching and ordering rules. */
 class LibrarySearchResultsTest {
-    private fun video(id: String, title: String = id, channelName: String = "Channel") =
-        Video(
-            id = id,
-            title = title,
-            channelName = channelName,
-            channelId = "channel-$id",
-            thumbnailUrl = "",
-            duration = 0,
-            viewCount = 0L,
-            uploadDate = "",
-        )
+    private fun video(
+        id: String,
+        title: String = id,
+        channelName: String = "Channel",
+    ) = Video(
+        id = id,
+        title = title,
+        channelName = channelName,
+        channelId = "channel-$id",
+        thumbnailUrl = "",
+        duration = 0,
+        viewCount = 0L,
+        uploadDate = "",
+    )
 
-    private fun history(id: String, title: String = id, channelName: String = "Channel", isMusic: Boolean = false) =
-        VideoHistoryEntry(
-            videoId = id,
-            position = 0L,
-            duration = 0L,
-            timestamp = 0L,
-            title = title,
-            thumbnailUrl = "",
-            channelName = channelName,
-            isMusic = isMusic,
-        )
+    private fun history(
+        id: String,
+        title: String = id,
+        channelName: String = "Channel",
+        isMusic: Boolean = false,
+    ) = VideoHistoryEntry(
+        videoId = id,
+        position = 0L,
+        duration = 0L,
+        timestamp = 0L,
+        title = title,
+        thumbnailUrl = "",
+        channelName = channelName,
+        isMusic = isMusic,
+    )
 
-    private fun liked(id: String, title: String = id) =
-        LikedVideoInfo(videoId = id, title = title, thumbnail = "", channelName = "Channel")
+    private fun liked(
+        id: String,
+        title: String = id,
+    ) = LikedVideoInfo(videoId = id, title = title, thumbnail = "", channelName = "Channel")
 
-    private fun playlist(id: String, name: String, description: String = "") =
-        PlaylistInfo(
-            id = id,
-            name = name,
-            description = description,
-            videoCount = 1,
-            thumbnailUrl = "",
-            isPrivate = false,
-            createdAt = 0L,
-        )
+    private fun playlist(
+        id: String,
+        name: String,
+        description: String = "",
+    ) = PlaylistInfo(
+        id = id,
+        name = name,
+        description = description,
+        videoCount = 1,
+        thumbnailUrl = "",
+        isPrivate = false,
+        createdAt = 0L,
+    )
 
-    private fun downloadedVideo(id: String, downloadedAt: Long, title: String = id) =
-        DownloadedVideo(video = video(id, title), filePath = "/tmp/$id", downloadedAt = downloadedAt)
+    private fun downloadedVideo(
+        id: String,
+        downloadedAt: Long,
+        title: String = id,
+    ) = DownloadedVideo(video = video(id, title), filePath = "/tmp/$id", downloadedAt = downloadedAt)
 
-    private fun downloadedTrack(videoId: String, downloadedAt: Long, title: String = videoId) =
-        DownloadedTrack(
-            track = MusicTrack(videoId = videoId, title = title, artist = "Artist", thumbnailUrl = "", duration = 0),
-            filePath = "/tmp/$videoId",
-            downloadedAt = downloadedAt,
-        )
+    private fun downloadedTrack(
+        videoId: String,
+        downloadedAt: Long,
+        title: String = videoId,
+    ) = DownloadedTrack(
+        track = MusicTrack(videoId = videoId, title = title, artist = "Artist", thumbnailUrl = "", duration = 0),
+        filePath = "/tmp/$videoId",
+        downloadedAt = downloadedAt,
+    )
 
     @Test
     fun `blank query yields no sections`() {

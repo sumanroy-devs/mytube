@@ -1174,7 +1174,7 @@ fun NavGraphBuilder.flowAppGraph(
                 musicViewModel.loadDailyMixPage(playlistId)
             } else {
                 musicViewModel.fetchPlaylistDetails(playlistId)
-                   musicViewModel.fetchPlaylistDetails(playlistId)
+                musicViewModel.fetchPlaylistDetails(playlistId)
             }
         }
 

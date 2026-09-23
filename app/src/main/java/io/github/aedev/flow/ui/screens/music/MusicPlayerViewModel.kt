@@ -336,8 +336,8 @@ class MusicPlayerViewModel
                         launch(PerformanceDispatcher.networkIO) {
                             if (
                                 !isLocalMediaId(track.videoId) &&
-                                    !localUriOverrides.containsKey(track.videoId) &&
-                                    !downloadManager.isCachedForOffline(track.videoId)
+                                !localUriOverrides.containsKey(track.videoId) &&
+                                !downloadManager.isCachedForOffline(track.videoId)
                             ) {
                                 EnhancedMusicPlayerManager.resolveStreamUrl(track.videoId)
                             }

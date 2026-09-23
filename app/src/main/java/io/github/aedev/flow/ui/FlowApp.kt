@@ -735,7 +735,6 @@ fun FlowApp(
                         bottom = snackbarBottomPadding,
                     ),
         )
-
     }
 }
 
