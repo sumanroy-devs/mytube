@@ -638,8 +638,6 @@
     <string name="notif_interval_12h">12 hours</string>
     <string name="notif_interval_24h">24 hours</string>
     <string name="settings_item_theme">Theme</string>
-    <string name="settings_item_app_icon">App Icon</string>
-    <string name="settings_item_app_icon_subtitle">Customize your launcher icon</string>
     <string name="settings_item_content_prefs">Content Preferences</string>
     <string name="settings_item_content_prefs_subtitle">Block topics you don\'t want to see</string>
     <string name="settings_item_player">Player Settings</string>
@@ -745,18 +743,6 @@
     <string name="appearance_system_light_theme">Light mode theme</string>
     <string name="appearance_system_dark_theme">Dark mode theme</string>
     <!-- App Icon Picker -->
-    <string name="app_icon_picker_subtitle">Choose a launcher icon style. The change takes effect immediately and the launcher will briefly refresh.</string>
-    <string name="app_icon_picker_warning">Heads up: switching icons uses an Android system mechanism that may briefly remove the app shortcut from your home screen. Long-press the launcher to add it back if needed.</string>
-    <string name="app_icon_apply_toast">Icon updated - your launcher will refresh</string>
-    <string name="icon_name_flow_red">MyTube Blue</string>
-    <string name="icon_name_flow_light">MyTube Light</string>
-    <string name="icon_name_flow_play">MyTube Play</string>
-    <string name="icon_name_amoled">AMOLED Dark</string>
-    <string name="icon_name_monochrome">Monochrome</string>
-    <string name="icon_name_ghost">Ghost</string>
-    <string name="icon_name_dynamic">Material You</string>
-    <string name="icon_name_material_sky">Material Sky</string>
-    <string name="icon_name_material_mint">Material Mint</string>
     <!-- Player Appearance -->
     <string name="player_appearance_title">Player Appearance</string>
     <string name="player_appearance_header">Customize Player Controls</string>

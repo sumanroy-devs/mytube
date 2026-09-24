@@ -1,8 +1,6 @@
 package io.github.aedev.flow.data.local
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
@@ -20,7 +18,6 @@ import io.github.aedev.flow.data.local.entity.SubscriptionGroupEntity
 import io.github.aedev.flow.data.local.entity.VideoEntity
 import io.github.aedev.flow.data.model.Video
 import io.github.aedev.flow.data.recommendation.FlowNeuroEngine
-import io.github.aedev.flow.util.AppIcons
 import io.github.aedev.flow.utils.ThumbnailUrlResolver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -174,16 +171,7 @@ class BackupRepository(
         val playerSettings = playerPreferences.getExportData()
         val localSettings = localDataManager.getExportData()
         val searchSettings = searchHistoryRepo.getSettingsBackup()
-        val activeIconSuffix = detectActiveIconSuffix()
-        val exportedStrings =
-            if (activeIconSuffix != null) {
-                playerSettings.strings +
-                    mapOf("app_icon_suffix" to activeIconSuffix) +
-                    localSettings.strings +
-                    searchSettings.strings
-            } else {
-                playerSettings.strings + localSettings.strings + searchSettings.strings
-            }
+        val exportedStrings = playerSettings.strings + localSettings.strings + searchSettings.strings
         return SettingsBackup(
             strings = exportedStrings,
             booleans = playerSettings.booleans + localSettings.booleans + searchSettings.booleans,
@@ -236,17 +224,6 @@ class BackupRepository(
 
         if (videos.isNotEmpty()) {
             FlowNeuroEngine.bootstrapFromWatchHistory(context, videos)
-        }
-    }
-
-    /** Detect which launcher icon alias is currently enabled via PackageManager. */
-    private fun detectActiveIconSuffix(): String? {
-        val pm = context.packageManager
-        val pkg = context.packageName
-        return AppIcons.ALL_SUFFIXES.firstOrNull { suffix ->
-            pm.getComponentEnabledSetting(
-                ComponentName(pkg, "${AppIcons.NAMESPACE}$suffix"),
-            ) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
         }
     }
 
@@ -2128,23 +2105,6 @@ class BackupRepository(
             playerPreferences.restoreData(settings)
             localDataManager.restoreData(settings)
             searchHistoryRepo.restoreSettings(settings)
-            val savedIconSuffix = settings.strings["app_icon_suffix"]
-            if (!savedIconSuffix.isNullOrEmpty() && AppIcons.ALL_SUFFIXES.contains(savedIconSuffix)) {
-                withContext(Dispatchers.Main) {
-                    val pm = context.packageManager
-                    val pkg = context.packageName
-                    for (suffix in AppIcons.ALL_SUFFIXES) {
-                        val cn = ComponentName(pkg, "${AppIcons.NAMESPACE}$suffix")
-                        val want =
-                            if (suffix == savedIconSuffix) {
-                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                            } else {
-                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                            }
-                        pm.setComponentEnabledSetting(cn, want, PackageManager.DONT_KILL_APP)
-                    }
-                }
-            }
         }
     }
 

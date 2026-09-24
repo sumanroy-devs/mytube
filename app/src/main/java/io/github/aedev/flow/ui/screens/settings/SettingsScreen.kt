@@ -91,7 +91,6 @@ fun SettingsScreen(
     onNavigateToSearchHistory: () -> Unit,
     onNavigateToUserPreferences: () -> Unit,
     onNavigateToNotifications: () -> Unit,
-    onNavigateToAppIconPicker: () -> Unit,
     onNavigateToDiagnostics: () -> Unit,
     onNavigateToAutoBackup: () -> Unit,
     onNavigateToSyncDevices: () -> Unit,
@@ -297,13 +296,6 @@ fun SettingsScreen(
                 currentAppLanguageLabel,
                 secAppearance,
             ) { showAppLanguageDialog = true },
-            SettingSearchEntry(
-                Icons.Outlined.AppShortcut,
-                stringResource(R.string.settings_item_app_icon),
-                stringResource(R.string.settings_item_app_icon_subtitle),
-                secAppearance,
-                onNavigateToAppIconPicker,
-            ),
             SettingSearchEntry(
                 Icons.Outlined.Tune,
                 stringResource(R.string.settings_item_player_appearance),
@@ -965,16 +957,6 @@ fun SettingsScreen(
                             title = stringResource(R.string.settings_item_app_language),
                             subtitle = currentAppLanguageLabel,
                             onClick = { showAppLanguageDialog = true },
-                        )
-                        HorizontalDivider(
-                            Modifier.padding(start = 56.dp),
-                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        )
-                        SettingsItem(
-                            icon = Icons.Outlined.AppShortcut,
-                            title = stringResource(R.string.settings_item_app_icon),
-                            subtitle = stringResource(R.string.settings_item_app_icon_subtitle),
-                            onClick = onNavigateToAppIconPicker,
                         )
                         HorizontalDivider(
                             Modifier.padding(start = 56.dp),
