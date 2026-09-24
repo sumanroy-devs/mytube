@@ -27,6 +27,9 @@ android {
             useSupportLibrary = true
         }
 
+        buildConfigField("Boolean", "UPDATER_ENABLED", "true")
+        buildConfigField("String", "DISCORD_APPLICATION_ID", "\"1526515771021328514\"")
+
         // Support all architectures for maximum device compatibility
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
@@ -46,20 +49,6 @@ android {
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
             isUniversalApk = true
-        }
-    }
-
-    flavorDimensions += "version"
-    productFlavors {
-        create("github") {
-            dimension = "version"
-            isDefault = true
-            buildConfigField("Boolean", "UPDATER_ENABLED", "true")
-            buildConfigField("String", "DISCORD_APPLICATION_ID", "\"1526515771021328514\"")
-        }
-        create("foss") {
-            dimension = "version"
-            buildConfigField("Boolean", "UPDATER_ENABLED", "false")
         }
     }
 
@@ -296,7 +285,7 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     implementation(libs.androidx.work.runtime.ktx)
-    "githubImplementation"(libs.apkupdater)
+    implementation(libs.apkupdater)
 
     implementation(libs.brotli)
     implementation(libs.re2j)

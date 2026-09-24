@@ -83,32 +83,32 @@ jobs:
 
       - name: Run unit tests
         run: >
-          ./gradlew :app:testGithubDebugUnitTest :app:testFossDebugUnitTest
+          ./gradlew :app:testDebugUnitTest
           --max-workers=1 --build-cache --stacktrace
 
       # Instrumentation tests are not executed in CI, but they must still
       # compile: breakage here otherwise lands on main unnoticed.
       - name: Compile instrumentation tests
         run: >
-          ./gradlew :app:compileGithubDebugAndroidTestKotlin
+          ./gradlew :app:compileDebugAndroidTestKotlin
           --build-cache --stacktrace
 
-      - name: Lint GitHub nightly
+      - name: Lint nightly
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: >
-          ./gradlew :app:lintGithubNightly
+          ./gradlew :app:lintNightly
           --build-cache --stacktrace
 
-      - name: Lint GitHub release
+      - name: Lint release
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         run: >
-          ./gradlew :app:lintGithubRelease
+          ./gradlew :app:lintRelease
           --build-cache --stacktrace
 
       - name: Build CI APKs
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: >
-          ./gradlew :app:assembleGithubRelease :app:assembleGithubNightly :app:assembleFossRelease
+          ./gradlew :app:assembleRelease :app:assembleNightly
           --max-workers=1 --build-cache --stacktrace
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
@@ -118,7 +118,7 @@ jobs:
       - name: Build release APKs
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         run: >
-          ./gradlew :app:assembleGithubRelease :app:assembleFossRelease
+          ./gradlew :app:assembleRelease
           --max-workers=1 --build-cache --stacktrace
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
@@ -140,12 +140,9 @@ jobs:
 
           status=0
           for apk in \
-            app/build/outputs/apk/github/release/app-github-universal-release.apk \
-            app/build/outputs/apk/github/release/app-github-arm64-v8a-release.apk \
-            app/build/outputs/apk/github/release/app-github-armeabi-v7a-release.apk \
-            app/build/outputs/apk/foss/release/app-foss-universal-release.apk \
-            app/build/outputs/apk/foss/release/app-foss-arm64-v8a-release.apk \
-            app/build/outputs/apk/foss/release/app-foss-armeabi-v7a-release.apk
+            app/build/outputs/apk/release/app-universal-release.apk \
+            app/build/outputs/apk/release/app-arm64-v8a-release.apk \
+            app/build/outputs/apk/release/app-armeabi-v7a-release.apk
           do
             if [ ! -f "$apk" ]; then
               echo "::error::Missing expected APK $apk"
@@ -165,22 +162,19 @@ jobs:
       - name: Checksum nightly APK
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: |
-          test -f app/build/outputs/apk/github/nightly/app-github-universal-nightly.apk
-          sha256sum app/build/outputs/apk/github/nightly/app-github-universal-nightly.apk | tee app/build/outputs/apk/github/nightly/app-github-universal-nightly.apk.sha256
+          test -f app/build/outputs/apk/nightly/app-universal-nightly.apk
+          sha256sum app/build/outputs/apk/nightly/app-universal-nightly.apk | tee app/build/outputs/apk/nightly/app-universal-nightly.apk.sha256
 
       - name: Report individual APK sizes
         shell: bash
         run: |
           shopt -s nullglob
           apks=(
-            app/build/outputs/apk/github/release/app-github-universal-release*.apk
-            app/build/outputs/apk/github/release/app-github-arm64-v8a-release*.apk
-            app/build/outputs/apk/github/release/app-github-armeabi-v7a-release*.apk
-            app/build/outputs/apk/foss/release/app-foss-universal-release*.apk
-            app/build/outputs/apk/foss/release/app-foss-arm64-v8a-release*.apk
-            app/build/outputs/apk/foss/release/app-foss-armeabi-v7a-release*.apk
+            app/build/outputs/apk/release/app-universal-release*.apk
+            app/build/outputs/apk/release/app-arm64-v8a-release*.apk
+            app/build/outputs/apk/release/app-armeabi-v7a-release*.apk
           )
-          expected=6
+          expected=3
 
           if (( ${#apks[@]} != expected )); then
             printf 'Expected %d published APKs, found %d.\n' "$expected" "${#apks[@]}" >&2
@@ -198,33 +192,33 @@ jobs:
               printf '| `%s` | %s | %s |\n' "$(basename "$apk")" "$size" "$bytes"
             done
             echo
-            echo '> GitHub and FOSS APKs are uploaded individually without compression. Nightly remains a compressed artifact on regular CI runs.'
+            echo '> Release APKs are uploaded individually without compression. Nightly remains a compressed artifact on regular CI runs.'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # The universal APKs are what IzzyOnDroid and the README link to.
-      - name: Upload GitHub universal APK
+      # The universal APK is what IzzyOnDroid and the README link to.
+      - name: Upload universal APK
         uses: actions/upload-artifact@v7
         with:
-          name: mytube-github-universal-release-apk
-          path: app/build/outputs/apk/github/release/app-github-universal-release*.apk
+          name: mytube-universal-release-apk
+          path: app/build/outputs/apk/release/app-universal-release*.apk
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
 
-      - name: Upload GitHub ARM64 APK
+      - name: Upload ARM64 APK
         uses: actions/upload-artifact@v7
         with:
-          name: mytube-github-arm64-release-apk
-          path: app/build/outputs/apk/github/release/app-github-arm64-v8a-release*.apk
+          name: mytube-arm64-release-apk
+          path: app/build/outputs/apk/release/app-arm64-v8a-release*.apk
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
 
-      - name: Upload GitHub ARMv7 APK
+      - name: Upload ARMv7 APK
         uses: actions/upload-artifact@v7
         with:
-          name: mytube-github-armeabi-v7a-release-apk
-          path: app/build/outputs/apk/github/release/app-github-armeabi-v7a-release*.apk
+          name: mytube-armeabi-v7a-release-apk
+          path: app/build/outputs/apk/release/app-armeabi-v7a-release*.apk
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
@@ -235,37 +229,10 @@ jobs:
         with:
           name: mytube-nightly-apk
           path: |
-            app/build/outputs/apk/github/nightly/app-github-universal-nightly.apk
-            app/build/outputs/apk/github/nightly/app-github-universal-nightly.apk.sha256
+            app/build/outputs/apk/nightly/app-universal-nightly.apk
+            app/build/outputs/apk/nightly/app-universal-nightly.apk.sha256
           if-no-files-found: error
           retention-days: 14
-
-      - name: Upload FOSS universal APK
-        uses: actions/upload-artifact@v7
-        with:
-          name: mytube-foss-universal-release-apk
-          path: app/build/outputs/apk/foss/release/app-foss-universal-release*.apk
-          if-no-files-found: error
-          retention-days: 14
-          compression-level: 0
-
-      - name: Upload FOSS ARM64 APK
-        uses: actions/upload-artifact@v7
-        with:
-          name: mytube-foss-arm64-release-apk
-          path: app/build/outputs/apk/foss/release/app-foss-arm64-v8a-release*.apk
-          if-no-files-found: error
-          retention-days: 14
-          compression-level: 0
-
-      - name: Upload FOSS ARMv7 APK
-        uses: actions/upload-artifact@v7
-        with:
-          name: mytube-foss-armeabi-v7a-release-apk
-          path: app/build/outputs/apk/foss/release/app-foss-armeabi-v7a-release*.apk
-          if-no-files-found: error
-          retention-days: 14
-          compression-level: 0
 
   release:
     name: Create Release
@@ -287,17 +254,14 @@ jobs:
           path: dist/
           merge-multiple: true
 
-      # mytube.apk and mytube-foss.apk are the universal builds. Keep these
-      # exact names: release feeds and the README match assets by file name.
+      # mytube.apk is the universal build. Keep these exact names: release
+      # feeds and the README match assets by file name.
       - name: Rename APKs for release
         run: |
           set -euo pipefail
-          mv dist/app-github-universal-release.apk   dist/mytube.apk
-          mv dist/app-foss-universal-release.apk     dist/mytube-foss.apk
-          mv dist/app-github-arm64-v8a-release.apk   dist/mytube-arm64-v8a.apk
-          mv dist/app-github-armeabi-v7a-release.apk dist/mytube-armeabi-v7a.apk
-          mv dist/app-foss-arm64-v8a-release.apk     dist/mytube-foss-arm64-v8a.apk
-          mv dist/app-foss-armeabi-v7a-release.apk   dist/mytube-foss-armeabi-v7a.apk
+          mv dist/app-universal-release.apk    dist/mytube.apk
+          mv dist/app-arm64-v8a-release.apk    dist/mytube-arm64-v8a.apk
+          mv dist/app-armeabi-v7a-release.apk  dist/mytube-armeabi-v7a.apk
 
       - name: Generate checksums
         run: |
@@ -325,11 +289,8 @@ jobs:
           generate_release_notes: false
           files: |
             dist/mytube.apk
-            dist/mytube-foss.apk
             dist/mytube-arm64-v8a.apk
             dist/mytube-armeabi-v7a.apk
-            dist/mytube-foss-arm64-v8a.apk
-            dist/mytube-foss-armeabi-v7a.apk
             dist/checksums.txt
           draft: false
           prerelease: false

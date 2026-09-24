@@ -14,12 +14,12 @@ import org.junit.Test
  *
  * Run with a device connected (MIUI/HyperOS needs both "USB debugging (Security settings)" and
  * "Install via USB" enabled in Developer options):
- *   ./gradlew :app:generateGithubReleaseBaselineProfile
+ *   ./gradlew :app:generateReleaseBaselineProfile
  *
  * Or on the managed emulator, which needs neither:
- *   ./gradlew :app:generateGithubReleaseBaselineProfile -PbaselineProfileEmulator=true
+ *   ./gradlew :app:generateReleaseBaselineProfile -PbaselineProfileEmulator=true
  *
- * Output lands in app/src/githubRelease/generated/baselineProfiles and should be committed.
+ * Output lands in app/src/release/generated/baselineProfiles and should be committed.
  */
 class BaselineProfileGenerator {
     @get:Rule

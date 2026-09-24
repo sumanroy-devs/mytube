@@ -321,6 +321,11 @@
                 android:resource="@xml/widget_downloads_info" />
         </receiver>
 
+        <activity
+            android:name="io.github.aedev.flow.discord.DiscordLoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Flow" />
+
     </application>
 
 </manifest>
