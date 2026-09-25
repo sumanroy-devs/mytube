@@ -91,21 +91,6 @@ android {
             isShrinkResources = false
         }
 
-        // Nightly: release-level performance + debug signing so it's easy to
-        // sideload. Fixes the laggy-nightly issue reported in #66.
-        create("nightly") {
-            initWith(getByName("release"))
-            applicationIdSuffix = ".nightly"
-            versionNameSuffix = "-nightly"
-            isDebuggable = false
-            isMinifyEnabled = true
-            isShrinkResources = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-            signingConfig = signingConfigs.getByName("debug")
-        }
         release {
             isDebuggable = false
             isMinifyEnabled = true
