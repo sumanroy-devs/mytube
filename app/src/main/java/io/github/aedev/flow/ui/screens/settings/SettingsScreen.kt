@@ -412,6 +412,13 @@ fun SettingsScreen(
                 secAbout,
                 { updateViewModel?.checkForUpdate(manual = true) },
             ),
+            SettingSearchEntry(
+                Icons.Outlined.CloudSync,
+                stringResource(R.string.settings_update_auto_title),
+                stringResource(R.string.settings_update_auto_subtitle),
+                secAbout,
+                { updateViewModel?.toggleAutoUpdate(!autoUpdateEnabled) },
+            ),
         )
     val filteredEntries =
         if (searchQuery.isBlank()) {
