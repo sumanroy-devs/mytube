@@ -25,7 +25,6 @@ import androidx.compose.material.icons.outlined.NotificationsOff
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.Subscriptions
-import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -54,12 +53,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import io.github.aedev.flow.BuildConfig
 import io.github.aedev.flow.R
 import io.github.aedev.flow.data.local.PlayerPreferences
 import io.github.aedev.flow.notification.BackgroundWorkPolicy
 import io.github.aedev.flow.notification.SubscriptionCheckWorker
-import io.github.aedev.flow.notification.UpdateCheckWorker
 import io.github.aedev.flow.ui.components.layout.topbar.FlowTopBar
 import kotlinx.coroutines.launch
 
@@ -74,7 +71,6 @@ fun NotificationSettingsScreen(onNavigateBack: () -> Unit) {
     val notifNewVideos by prefs.notifNewVideosEnabled.collectAsState(initial = true)
     val notifDownloads by prefs.notifDownloadsEnabled.collectAsState(initial = true)
     val notifReminders by prefs.notifRemindersEnabled.collectAsState(initial = true)
-    val notifUpdates by prefs.notifUpdatesEnabled.collectAsState(initial = true)
     val notifGeneral by prefs.notifGeneralEnabled.collectAsState(initial = true)
     val subCheckInterval by prefs.subscriptionCheckIntervalMinutes.collectAsState(initial = 360)
     var showIntervalDialog by remember { mutableStateOf(false) }
@@ -150,15 +146,11 @@ fun NotificationSettingsScreen(onNavigateBack: () -> Unit) {
                                         intervalMinutes = subCheckInterval.toLong(),
                                         reschedule = true,
                                     )
-                                    if (BuildConfig.UPDATER_ENABLED) {
-                                        UpdateCheckWorker.schedulePeriodicCheck(context, reschedule = true)
-                                    }
                                     if (!backgroundWorkAllowed) {
                                         BackgroundWorkPolicy.requestUnrestrictedBackgroundWork(context)
                                     }
                                 } else {
                                     SubscriptionCheckWorker.cancelScheduledChecks(context)
-                                    UpdateCheckWorker.cancelScheduledChecks(context)
                                 }
                             }
                         },
@@ -231,20 +223,6 @@ fun NotificationSettingsScreen(onNavigateBack: () -> Unit) {
                         enabled = notificationsEnabled,
                         onCheckedChange = { coroutineScope.launch { prefs.setNotifRemindersEnabled(it) } },
                     )
-                    if (BuildConfig.UPDATER_ENABLED) {
-                        HorizontalDivider(
-                            Modifier.padding(start = 56.dp),
-                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        )
-                        SettingsSwitchItem(
-                            icon = Icons.Outlined.Update,
-                            title = stringResource(R.string.notif_type_updates),
-                            subtitle = stringResource(R.string.notif_type_updates_subtitle),
-                            checked = notifUpdates,
-                            enabled = notificationsEnabled,
-                            onCheckedChange = { coroutineScope.launch { prefs.setNotifUpdatesEnabled(it) } },
-                        )
-                    }
                     HorizontalDivider(
                         Modifier.padding(start = 56.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),

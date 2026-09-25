@@ -27,7 +27,6 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("Boolean", "UPDATER_ENABLED", "true")
         buildConfigField("String", "DISCORD_APPLICATION_ID", "\"1526515771021328514\"")
 
         // Support all architectures for maximum device compatibility
@@ -285,7 +284,6 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.apkupdater)
 
     implementation(libs.brotli)
     implementation(libs.re2j)

@@ -1,6 +1,5 @@
 package io.github.aedev.flow
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
@@ -24,14 +23,11 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import com.google.gson.JsonParser
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.aedev.flow.BuildConfig
 import io.github.aedev.flow.data.local.AppUiModePreferences
 import io.github.aedev.flow.data.local.LocalDataManager
 import io.github.aedev.flow.data.recommendation.FlowNeuroEngine
 import io.github.aedev.flow.discord.DiscordPresenceRuntime
-import io.github.aedev.flow.network.AppProxyManager
 import io.github.aedev.flow.platform.AppUiMode
 import io.github.aedev.flow.platform.AppUiRoot
 import io.github.aedev.flow.platform.DeviceFormFactorDetector
@@ -42,7 +38,6 @@ import io.github.aedev.flow.player.MemoryPressurePolicy
 import io.github.aedev.flow.player.PictureInPictureHelper
 import io.github.aedev.flow.ui.FlowApp
 import io.github.aedev.flow.ui.components.ProvideVideoCardState
-import io.github.aedev.flow.ui.components.UpdateDialog
 import io.github.aedev.flow.ui.components.shared.ProvideChannelGroupLabels
 import io.github.aedev.flow.ui.components.shared.ProvideDateDisplaySettings
 import io.github.aedev.flow.ui.screens.CrashReporterScreen
@@ -53,19 +48,13 @@ import io.github.aedev.flow.ui.theme.ThemeVariant
 import io.github.aedev.flow.ui.tv.FlowTvApp
 import io.github.aedev.flow.ui.utils.ProvideWindowSizeClass
 import io.github.aedev.flow.ui.youtubeChannelDeepLinkRoute
-import io.github.aedev.flow.updater.ApkUpdateHelper
 import io.github.aedev.flow.utils.AppLanguageManager
 import io.github.aedev.flow.utils.FlowCrashHandler
-import io.github.aedev.flow.utils.UpdateInfo
-import io.github.aedev.flow.utils.UpdateManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import javax.inject.Inject
 
 private const val PORTRAIT_REEL_ASPECT_RATIO = 9f / 16f
@@ -77,9 +66,6 @@ class MainActivity : ComponentActivity() {
 
     private val _isDeeplinkShort = mutableStateOf(false)
     val isDeeplinkShort: State<Boolean> = _isDeeplinkShort
-
-    private val _pendingUpdateInfo = mutableStateOf<UpdateInfo?>(null)
-    val pendingUpdateInfo: State<UpdateInfo?> = _pendingUpdateInfo
 
     private val _openMusicPlayerRequest = mutableIntStateOf(0)
     val openMusicPlayerRequest: State<Int> = _openMusicPlayerRequest
@@ -178,11 +164,6 @@ class MainActivity : ComponentActivity() {
 
         handleIntent(intent)
 
-        // Check for updates (only in release builds, only in github flavor)
-        if (!BuildConfig.DEBUG && BuildConfig.UPDATER_ENABLED) {
-            checkForUpdates(dataManager)
-        }
-
         setContent {
             val scope = rememberCoroutineScope()
             var themeMode by remember { mutableStateOf(ThemeMode.SYSTEM) }
@@ -227,22 +208,6 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 return@setContent
-            }
-
-            var updateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
-
-            // Check for updates ONCE on launch — skip debug/foss builds, enforce 24h cooldown
-            LaunchedEffect(Unit) {
-                if (BuildConfig.DEBUG || !BuildConfig.UPDATER_ENABLED) return@LaunchedEffect
-                val lastCheck = dataManager.lastUpdateCheck.first()
-                val currentTime = System.currentTimeMillis()
-                if (currentTime - lastCheck < 24 * 60 * 60 * 1000L) return@LaunchedEffect
-
-                val info = UpdateManager.checkForUpdate(BuildConfig.VERSION_NAME)
-                dataManager.setLastUpdateCheck(currentTime)
-                if (info != null && info.isNewer) {
-                    updateInfo = info
-                }
             }
 
             // Load theme preference and keep it reactive
@@ -296,28 +261,6 @@ class MainActivity : ComponentActivity() {
                 systemDarkThemeMode = systemDarkThemeMode,
                 systemDarkThemeVariant = systemDarkThemeVariant,
             ) {
-                // Show Dialog Overlay if update exists (github flavor only)
-                if (BuildConfig.UPDATER_ENABLED && updateInfo != null) {
-                    UpdateDialog(
-                        updateInfo = updateInfo!!,
-                        onDismiss = { updateInfo = null },
-                        onUpdate = {
-                            UpdateManager.triggerDownload(context, updateInfo!!.downloadUrl)
-                            updateInfo = null
-                        },
-                    )
-                }
-
-                // Handle update from notification (github flavor only)
-                if (BuildConfig.UPDATER_ENABLED) {
-                    val pendingUpdate by this@MainActivity.pendingUpdateInfo
-                    LaunchedEffect(pendingUpdate) {
-                        if (pendingUpdate != null) {
-                            updateInfo = pendingUpdate
-                        }
-                    }
-                }
-
                 // Request notification permission for Android 13+ (skip during benchmark/test runs)
                 val isBypassMode = intent?.getBooleanExtra(EXTRA_BENCHMARK_BYPASS_ONBOARDING, false) == true
                 if (!isBypassMode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -551,14 +494,6 @@ class MainActivity : ComponentActivity() {
         if (videoId != null) {
             _deeplinkVideoId.value = videoId
             intent.putExtra("deeplink_video_id", videoId)
-        }
-
-        // Check for Update Notification extras
-        if (intent.hasExtra("EXTRA_UPDATE_VERSION")) {
-            val version = intent.getStringExtra("EXTRA_UPDATE_VERSION") ?: ""
-            val changelog = intent.getStringExtra("EXTRA_UPDATE_CHANGELOG") ?: ""
-            val url = intent.getStringExtra("EXTRA_UPDATE_URL") ?: ""
-            _pendingUpdateInfo.value = UpdateInfo(version, changelog, url, true)
         }
     }
 
@@ -864,79 +799,6 @@ class MainActivity : ComponentActivity() {
             playerManager.pause()
             playerManager.stopBackgroundService()
         }
-    }
-
-    private fun checkForUpdates(dataManager: LocalDataManager) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // Check cooldown (24 hours)
-                val lastCheck = dataManager.lastUpdateCheck.first()
-                val currentTime = System.currentTimeMillis()
-                if (currentTime - lastCheck < 24 * 60 * 60 * 1000) {
-                    Log.d("MainActivity", "Skipping update check (cooldown)")
-                    return@launch
-                }
-
-                val client = AppProxyManager.applyTo(OkHttpClient.Builder()).build()
-                val request =
-                    Request
-                        .Builder()
-                        .url(UpdateManager.API_URL)
-                        .header("Accept", "application/vnd.github.v3+json")
-                        .build()
-                val response = client.newCall(request).execute()
-                if (response.isSuccessful) {
-                    val body = response.body?.string()
-                    if (body != null) {
-                        val json = JsonParser.parseString(body).asJsonObject
-                        val latestTag = json.get("tag_name").asString
-                        val currentVersion = BuildConfig.VERSION_NAME
-
-                        val cleanLatest = latestTag.removePrefix("v").split("-").first()
-                        val cleanCurrent = currentVersion.removePrefix("v").split("-").first()
-
-                        Log.d("MainActivity", "Latest tag: $latestTag, Current: $currentVersion, Comparing: $cleanLatest vs $cleanCurrent")
-
-                        if (isNewerVersion(cleanLatest, cleanCurrent)) {
-                            withContext(Dispatchers.Main) {
-                                AlertDialog
-                                    .Builder(this@MainActivity)
-                                    .setTitle(getString(R.string.new_update_available))
-                                    .setMessage(getString(R.string.update_download_prompt, latestTag))
-                                    .setPositiveButton(getString(R.string.download)) { _, _ ->
-                                        ApkUpdateHelper.requestDownload(this@MainActivity, UpdateManager.RELEASE_PAGE_URL)
-                                    }.setNegativeButton(getString(R.string.maybe_later), null)
-                                    .show()
-                            }
-                        }
-                    }
-                }
-
-                // Update last check time
-                dataManager.setLastUpdateCheck(currentTime)
-            } catch (e: Exception) {
-                Log.e("MainActivity", "Failed to check for updates", e)
-            }
-        }
-    }
-
-    private fun isNewerVersion(
-        latest: String,
-        current: String,
-    ): Boolean {
-        val cleanLatest = latest.split("-").first()
-        val cleanCurrent = current.split("-").first()
-        val latestParts = cleanLatest.split(".").mapNotNull { it.toIntOrNull() }
-        val currentParts = cleanCurrent.split(".").mapNotNull { it.toIntOrNull() }
-
-        val size = maxOf(latestParts.size, currentParts.size)
-        for (i in 0 until size) {
-            val l = latestParts.getOrNull(i) ?: 0
-            val c = currentParts.getOrNull(i) ?: 0
-            if (l > c) return true
-            if (l < c) return false
-        }
-        return false
     }
 
     companion object {

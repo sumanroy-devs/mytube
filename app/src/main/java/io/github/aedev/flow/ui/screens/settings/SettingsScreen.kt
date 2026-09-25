@@ -1,7 +1,5 @@
 package io.github.aedev.flow.ui.screens.settings
 
-import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,8 +44,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.gson.JsonParser
-import io.github.aedev.flow.BuildConfig
 import io.github.aedev.flow.R
 import io.github.aedev.flow.data.local.AppUiModePreferences
 import io.github.aedev.flow.data.local.DEEP_FLOW_NEVER_EXPIRES_HOURS
@@ -55,7 +51,6 @@ import io.github.aedev.flow.data.local.PlayerPreferences
 import io.github.aedev.flow.data.recommendation.FlowNeuroEngine
 import io.github.aedev.flow.data.recommendation.UserBrain
 import io.github.aedev.flow.discord.DiscordPresenceRuntime
-import io.github.aedev.flow.network.AppProxyManager
 import io.github.aedev.flow.platform.AppUiMode
 import io.github.aedev.flow.player.DeepFlowManager
 import io.github.aedev.flow.ui.components.layout.topbar.FlowSearchTopBar
@@ -63,12 +58,7 @@ import io.github.aedev.flow.ui.components.layout.topbar.FlowTopBar
 import io.github.aedev.flow.ui.theme.ThemeMode
 import io.github.aedev.flow.ui.theme.extendedColors
 import io.github.aedev.flow.utils.AppLanguageManager
-import io.github.aedev.flow.utils.UpdateManager
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -122,10 +112,6 @@ fun SettingsScreen(
     var showRegionDialog by remember { mutableStateOf(false) }
     var showAppLanguageDialog by remember { mutableStateOf(false) }
     var showResetBrainDialog by remember { mutableStateOf(false) }
-    // Update checker state (github flavor only)
-    var isCheckingUpdate by remember { mutableStateOf(false) }
-    // null = no dialog; non-null = tag string of the available update
-    var updateAvailableTag by remember { mutableStateOf<String?>(null) }
 
     // Player preferences states
     val currentRegion by playerPreferences.trendingRegion.collectAsState(initial = "IN")
@@ -188,76 +174,6 @@ fun SettingsScreen(
     BackHandler(enabled = isSearchActive) {
         isSearchActive = false
         searchQuery = ""
-    }
-
-    val onCheckForUpdatesClick: () -> Unit = {
-        if (BuildConfig.UPDATER_ENABLED && !isCheckingUpdate) {
-            isCheckingUpdate = true
-            coroutineScope.launch(Dispatchers.IO) {
-                try {
-                    val client = AppProxyManager.applyTo(OkHttpClient.Builder()).build()
-                    val request =
-                        Request
-                            .Builder()
-                            .url(UpdateManager.API_URL)
-                            .header("Accept", "application/vnd.github.v3+json")
-                            .build()
-                    val response = client.newCall(request).execute()
-                    withContext(Dispatchers.Main) {
-                        isCheckingUpdate = false
-                        if (response.isSuccessful) {
-                            val body = response.body?.string()
-                            if (body != null) {
-                                val json = JsonParser.parseString(body).asJsonObject
-                                val latestTag = json.get("tag_name").asString
-                                val cleanLatest = latestTag.removePrefix("v")
-                                val cleanCurrent = BuildConfig.VERSION_NAME.removePrefix("v")
-                                val latestParts = cleanLatest.split(".").mapNotNull { it.toIntOrNull() }
-                                val currentParts = cleanCurrent.split(".").mapNotNull { it.toIntOrNull() }
-                                var isNewer = false
-                                val size = maxOf(latestParts.size, currentParts.size)
-                                for (i in 0 until size) {
-                                    val l = latestParts.getOrNull(i) ?: 0
-                                    val c = currentParts.getOrNull(i) ?: 0
-                                    if (l > c) {
-                                        isNewer = true
-                                        break
-                                    }
-                                    if (l < c) break
-                                }
-                                if (isNewer) {
-                                    updateAvailableTag = latestTag
-                                } else {
-                                    android.widget.Toast
-                                        .makeText(
-                                            context,
-                                            context.getString(R.string.flow_is_up_to_date),
-                                            android.widget.Toast.LENGTH_SHORT,
-                                        ).show()
-                                }
-                            }
-                        } else {
-                            android.widget.Toast
-                                .makeText(
-                                    context,
-                                    context.getString(R.string.update_check_failed),
-                                    android.widget.Toast.LENGTH_SHORT,
-                                ).show()
-                        }
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        isCheckingUpdate = false
-                        android.widget.Toast
-                            .makeText(
-                                context,
-                                context.getString(R.string.update_check_failed),
-                                android.widget.Toast.LENGTH_SHORT,
-                            ).show()
-                    }
-                }
-            }
-        }
     }
 
     // Section label strings for the search index
@@ -442,20 +358,7 @@ fun SettingsScreen(
                 secAbout,
                 onNavigateToDiagnostics,
             ),
-        ) +
-            if (BuildConfig.UPDATER_ENABLED) {
-                listOf(
-                    SettingSearchEntry(
-                        Icons.Outlined.Update,
-                        stringResource(R.string.check_for_updates),
-                        stringResource(R.string.check_for_updates_subtitle),
-                        secAbout,
-                        onCheckForUpdatesClick,
-                    ),
-                )
-            } else {
-                emptyList()
-            }
+        )
     val filteredEntries =
         if (searchQuery.isBlank()) {
             emptyList()
@@ -1195,23 +1098,6 @@ fun SettingsScreen(
                             subtitle = stringResource(R.string.settings_item_diagnostics_subtitle),
                             onClick = onNavigateToDiagnostics,
                         )
-                        if (BuildConfig.UPDATER_ENABLED) {
-                            HorizontalDivider(
-                                Modifier.padding(start = 56.dp),
-                                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                            )
-                            SettingsItem(
-                                icon = if (isCheckingUpdate) Icons.Outlined.Sync else Icons.Outlined.Update,
-                                title = stringResource(R.string.check_for_updates),
-                                subtitle =
-                                    if (isCheckingUpdate) {
-                                        stringResource(R.string.checking_for_updates)
-                                    } else {
-                                        stringResource(R.string.check_for_updates_subtitle)
-                                    },
-                                onClick = onCheckForUpdatesClick,
-                            )
-                        }
                     }
                 }
 
@@ -1322,37 +1208,6 @@ fun SettingsScreen(
     }
 
     // Update Available Dialog (github flavor only)
-    if (BuildConfig.UPDATER_ENABLED) {
-        val tag = updateAvailableTag
-        if (tag != null) {
-            AlertDialog(
-                onDismissRequest = { updateAvailableTag = null },
-                icon = { Icon(Icons.Outlined.Update, null, tint = MaterialTheme.colorScheme.primary) },
-                title = { Text(stringResource(R.string.new_update_available), fontWeight = FontWeight.Bold) },
-                text = {
-                    Text(
-                        stringResource(R.string.update_available_template, tag),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                },
-                confirmButton = {
-                    Button(onClick = {
-                        updateAvailableTag = null
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(UpdateManager.RELEASE_PAGE_URL))
-                        context.startActivity(intent)
-                    }) {
-                        Text(stringResource(R.string.download))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { updateAvailableTag = null }) {
-                        Text(stringResource(R.string.cancel))
-                    }
-                },
-            )
-        }
-    }
-
     if (showAppLanguageDialog) {
         val languageOptions =
             remember(appLanguageOptions) {
