@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Downloaded update APKs land in the external cache; the FileProvider must
+         be able to hand their URI to the system package installer. -->
+    <external-cache-path
+        name="external_cache"
+        path="." />
+</paths>

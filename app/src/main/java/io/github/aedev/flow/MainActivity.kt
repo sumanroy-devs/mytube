@@ -23,7 +23,9 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.aedev.flow.BuildConfig
 import io.github.aedev.flow.data.local.AppUiModePreferences
 import io.github.aedev.flow.data.local.LocalDataManager
 import io.github.aedev.flow.data.recommendation.FlowNeuroEngine
@@ -38,6 +40,7 @@ import io.github.aedev.flow.player.MemoryPressurePolicy
 import io.github.aedev.flow.player.PictureInPictureHelper
 import io.github.aedev.flow.ui.FlowApp
 import io.github.aedev.flow.ui.components.ProvideVideoCardState
+import io.github.aedev.flow.ui.components.UpdateDialog
 import io.github.aedev.flow.ui.components.shared.ProvideChannelGroupLabels
 import io.github.aedev.flow.ui.components.shared.ProvideDateDisplaySettings
 import io.github.aedev.flow.ui.screens.CrashReporterScreen
@@ -48,6 +51,8 @@ import io.github.aedev.flow.ui.theme.ThemeVariant
 import io.github.aedev.flow.ui.tv.FlowTvApp
 import io.github.aedev.flow.ui.utils.ProvideWindowSizeClass
 import io.github.aedev.flow.ui.youtubeChannelDeepLinkRoute
+import io.github.aedev.flow.update.UpdateNotification
+import io.github.aedev.flow.update.UpdateViewModel
 import io.github.aedev.flow.utils.AppLanguageManager
 import io.github.aedev.flow.utils.FlowCrashHandler
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +73,10 @@ class MainActivity : ComponentActivity() {
     val isDeeplinkShort: State<Boolean> = _isDeeplinkShort
 
     private val _openMusicPlayerRequest = mutableIntStateOf(0)
+
+    // Bumped from onNewIntent: singleTop reuses this instance, so an update-notification
+    // tap while the app is alive must re-key the dialog-opening LaunchedEffect.
+    private val updateIntentTick = mutableIntStateOf(0)
     val openMusicPlayerRequest: State<Int> = _openMusicPlayerRequest
 
     private val _pendingRoute = mutableStateOf<String?>(null)
@@ -287,6 +296,32 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                // In-app update: activity-scoped so SettingsScreen's manual check drives the
+                // same state machine that hosts the dialog here.
+                val updateViewModel: UpdateViewModel? =
+                    if (BuildConfig.ENABLE_UPDATE_FEATURE) {
+                        viewModel(viewModelStoreOwner = this@MainActivity)
+                    } else {
+                        null
+                    }
+                val updateState by
+                    (updateViewModel?.updateState ?: MutableStateFlow(UpdateViewModel.UpdateState.Idle))
+                        .collectAsState()
+                val isDownloading by
+                    (updateViewModel?.isDownloading ?: MutableStateFlow(false)).collectAsState()
+                val downloadProgress by
+                    (updateViewModel?.downloadProgress ?: MutableStateFlow(0f)).collectAsState()
+
+                // Launched from the update notification → run a check so the update dialog opens.
+                // Keyed on the intent tick: singleTop reuses this activity, so a tap while the
+                // app is already alive arrives via onNewIntent rather than a fresh composition.
+                LaunchedEffect(updateIntentTick.intValue) {
+                    if (this@MainActivity.intent.hasExtra(UpdateNotification.EXTRA_UPDATE_VERSION)) {
+                        this@MainActivity.intent.removeExtra(UpdateNotification.EXTRA_UPDATE_VERSION)
+                        updateViewModel?.checkForUpdate(manual = false)
+                    }
+                }
+
                 // Date preferences: five DataStore flows used to be opened per video card,
                 // metadata line, info section, description sheet and info dialog.
                 ProvideWindowSizeClass {
@@ -373,6 +408,42 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 }
+
+                                if (BuildConfig.ENABLE_UPDATE_FEATURE && updateViewModel != null) {
+                                    when (val state = updateState) {
+                                        is UpdateViewModel.UpdateState.Available -> {
+                                            UpdateDialog(
+                                                release = state.release,
+                                                isDownloading = isDownloading,
+                                                progress = downloadProgress,
+                                                readyToInstall = false,
+                                                currentVersion = BuildConfig.VERSION_NAME,
+                                                onDismiss = { updateViewModel.dismiss() },
+                                                onAction = { updateViewModel.downloadUpdate(state.release) },
+                                                onIgnore = {
+                                                    updateViewModel.ignoreVersion(state.release.tagName.removePrefix("v"))
+                                                },
+                                            )
+                                        }
+
+                                        is UpdateViewModel.UpdateState.ReadyToInstall -> {
+                                            UpdateDialog(
+                                                release = state.release,
+                                                isDownloading = isDownloading,
+                                                progress = downloadProgress,
+                                                readyToInstall = true,
+                                                currentVersion = BuildConfig.VERSION_NAME,
+                                                onDismiss = { updateViewModel.dismiss() },
+                                                onAction = { updateViewModel.installUpdate(state.release) },
+                                                onIgnore = {
+                                                    updateViewModel.ignoreVersion(state.release.tagName.removePrefix("v"))
+                                                },
+                                            )
+                                        }
+
+                                        else -> {}
+                                    }
+                                }
                             }
                         }
                     }
@@ -415,6 +486,7 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleIntent(intent)
+        updateIntentTick.intValue++
     }
 
     private fun handleIntent(intent: Intent) {

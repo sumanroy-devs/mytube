@@ -1,5 +1,9 @@
 package io.github.aedev.flow.ui.screens.settings
 
+import android.content.Context
+import android.content.ContextWrapper
+import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -44,6 +48,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.aedev.flow.BuildConfig
 import io.github.aedev.flow.R
 import io.github.aedev.flow.data.local.AppUiModePreferences
 import io.github.aedev.flow.data.local.DEEP_FLOW_NEVER_EXPIRES_HOURS
@@ -57,7 +63,10 @@ import io.github.aedev.flow.ui.components.layout.topbar.FlowSearchTopBar
 import io.github.aedev.flow.ui.components.layout.topbar.FlowTopBar
 import io.github.aedev.flow.ui.theme.ThemeMode
 import io.github.aedev.flow.ui.theme.extendedColors
+import io.github.aedev.flow.update.UpdateManager
+import io.github.aedev.flow.update.UpdateViewModel
 import io.github.aedev.flow.utils.AppLanguageManager
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -118,6 +127,44 @@ fun SettingsScreen(
     val currentAppLanguage by playerPreferences.appLanguage.collectAsState(initial = AppLanguageManager.SYSTEM_DEFAULT)
     val discordSettingsState by DiscordPresenceRuntime.settingsState.collectAsStateWithLifecycle()
     val discordSettingsSummary = discordSettingsSummaryText(discordSettingsState)
+
+    // In-app update: activity-scoped so MainActivity's dialog host and this screen share one state machine.
+    val activity = context.findComponentActivity()
+    val updateViewModel: UpdateViewModel? =
+        if (BuildConfig.ENABLE_UPDATE_FEATURE && activity != null) {
+            viewModel(viewModelStoreOwner = activity)
+        } else {
+            null
+        }
+    val updateState by
+        (updateViewModel?.updateState ?: MutableStateFlow(UpdateViewModel.UpdateState.Idle))
+            .collectAsStateWithLifecycle()
+    val isCheckingUpdate = updateState is UpdateViewModel.UpdateState.Loading
+    val autoUpdateEnabled by
+        (updateViewModel?.isAutoUpdateEnabled ?: MutableStateFlow(false))
+            .collectAsStateWithLifecycle()
+
+    // Manual check results → toasts; the update dialog itself is hosted in MainActivity.
+    LaunchedEffect(updateState) {
+        when (updateState) {
+            is UpdateViewModel.UpdateState.NoUpdate -> {
+                val messageRes =
+                    if (UpdateManager.isUpdateActive) {
+                        R.string.toast_update_already_latest
+                    } else {
+                        R.string.toast_update_unavailable
+                    }
+                Toast.makeText(context, messageRes, Toast.LENGTH_SHORT).show()
+                updateViewModel?.dismissNoUpdate()
+            }
+
+            is UpdateViewModel.UpdateState.Error -> {
+                Toast.makeText(context, R.string.toast_update_check_failed, Toast.LENGTH_SHORT).show()
+            }
+
+            else -> {}
+        }
+    }
 
     if (showInterfaceModeDialog) {
         InterfaceModeDialog(
@@ -357,6 +404,13 @@ fun SettingsScreen(
                 stringResource(R.string.settings_item_diagnostics_subtitle),
                 secAbout,
                 onNavigateToDiagnostics,
+            ),
+            SettingSearchEntry(
+                Icons.Outlined.Update,
+                stringResource(R.string.pref_check_updates_title),
+                stringResource(R.string.pref_check_updates_summary),
+                secAbout,
+                { updateViewModel?.checkForUpdate(manual = true) },
             ),
         )
     val filteredEntries =
@@ -1098,6 +1152,56 @@ fun SettingsScreen(
                             subtitle = stringResource(R.string.settings_item_diagnostics_subtitle),
                             onClick = onNavigateToDiagnostics,
                         )
+
+                        HorizontalDivider(
+                            Modifier.padding(start = 56.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        )
+                        SettingsItem(
+                            icon = Icons.Outlined.Update,
+                            title = stringResource(R.string.pref_check_updates_title),
+                            subtitle =
+                                if (isCheckingUpdate) {
+                                    stringResource(R.string.pref_check_updates_checking)
+                                } else {
+                                    stringResource(R.string.pref_check_updates_summary)
+                                },
+                            onClick = { updateViewModel?.checkForUpdate(manual = true) },
+                        )
+
+                        HorizontalDivider(
+                            Modifier.padding(start = 56.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        )
+                        Row(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.CloudSync,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Spacer(Modifier.width(16.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(R.string.settings_update_auto_title),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                                Text(
+                                    text = stringResource(R.string.settings_update_auto_subtitle),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            Switch(
+                                checked = autoUpdateEnabled,
+                                onCheckedChange = { updateViewModel?.toggleAutoUpdate(it) },
+                            )
+                        }
                     }
                 }
 
@@ -1336,3 +1440,10 @@ private fun SettingsSearchResultItem(
         )
     }
 }
+
+private tailrec fun Context.findComponentActivity(): ComponentActivity? =
+    when (this) {
+        is ComponentActivity -> this
+        is ContextWrapper -> baseContext.findComponentActivity()
+        else -> null
+    }

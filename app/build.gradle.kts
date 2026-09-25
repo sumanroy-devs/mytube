@@ -28,6 +28,8 @@ android {
         }
 
         buildConfigField("String", "DISCORD_APPLICATION_ID", "\"1526515771021328514\"")
+        buildConfigField("Boolean", "ENABLE_UPDATE_FEATURE", "true")
+        buildConfigField("String", "RELEASE_APPLICATION_ID", "\"com.sroy.mytube\"")
 
         // Support all architectures for maximum device compatibility
         ndk {
@@ -88,6 +90,7 @@ android {
             isMinifyEnabled = false
             isShrinkResources = false
         }
+
         // Nightly: release-level performance + debug signing so it's easy to
         // sideload. Fixes the laggy-nightly issue reported in #66.
         create("nightly") {

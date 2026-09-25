@@ -21,6 +21,9 @@ import io.github.aedev.flow.innertube.pages.NewPipeExtractor
 import io.github.aedev.flow.network.AppProxyManager
 import io.github.aedev.flow.notification.NotificationHelper
 import io.github.aedev.flow.notification.SubscriptionCheckWorker
+import io.github.aedev.flow.update.UpdateCheckWorker
+import io.github.aedev.flow.update.UpdateManager
+import io.github.aedev.flow.update.UpdateNotification
 import io.github.aedev.flow.utils.AppLanguageManager
 import io.github.aedev.flow.utils.FlowCrashHandler
 import io.github.aedev.flow.utils.PerformanceDispatcher
@@ -139,6 +142,12 @@ class FlowApplication :
                 this@FlowApplication,
                 intervalMinutes = savedIntervalMinutes.toLong(),
             )
+        }
+
+        // Schedule periodic update checks (every 12 hours) — only builds that can update in place
+        if (UpdateManager.isUpdateActive) {
+            UpdateNotification.createChannel(this@FlowApplication)
+            UpdateCheckWorker.schedulePeriodicCheck(this@FlowApplication)
         }
 
         Log.d(TAG, "Workers scheduled successfully")
